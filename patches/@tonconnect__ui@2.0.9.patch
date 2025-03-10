@@ -1,0 +1,74 @@
+diff --git a/lib/index.cjs b/lib/index.cjs
+index 0e70158ca273e909e525cddfd65e4956b1b36197..9652e1f4b6ab1353742a788f10c2a8ed3bf31bca 100644
+--- a/lib/index.cjs
++++ b/lib/index.cjs
+@@ -2842,15 +2842,23 @@ function isDevice(device) {
+   if (isTmaPlatform("weba")) {
+     return true;
+   }
+-  const width = window2.innerWidth;
+-  switch (device) {
+-    case "desktop":
+-      return width > maxWidth.tablet;
+-    case "tablet":
+-      return width > maxWidth.mobile;
+-    default:
+-    case "mobile":
+-      return width <= maxWidth.mobile || isOS("ios", "android", "ipad");
++  // add check for desktop devices
++  const userAgent = navigator.userAgent;
++  const isDesktop = /Windows|Macintosh|Linux/i.test(userAgent);
++  const isNotAndroid = !/Android/i.test(userAgent);
++  if (isDesktop && isNotAndroid) {
++    return false;
++  } else {
++    const width = window2.innerWidth;
++    switch (device) {
++      case "desktop":
++        return width > maxWidth.tablet;
++      case "tablet":
++        return width > maxWidth.mobile;
++      default:
++      case "mobile":
++        return width <= maxWidth.mobile || isOS("ios", "android", "ipad");
++    }
+   }
+ }
+ function media(device) {
+diff --git a/lib/index.mjs b/lib/index.mjs
+index 4a23c434fa2f6ac16062a82187c4c8e3ae303885..7d09ad80fe9cacdb2e14dd7d93565b49bbb332c5 100644
+--- a/lib/index.mjs
++++ b/lib/index.mjs
+@@ -2837,15 +2837,23 @@ function isDevice(device) {
+   if (isTmaPlatform("weba")) {
+     return true;
+   }
+-  const width = window2.innerWidth;
+-  switch (device) {
+-    case "desktop":
+-      return width > maxWidth.tablet;
+-    case "tablet":
+-      return width > maxWidth.mobile;
+-    default:
+-    case "mobile":
+-      return width <= maxWidth.mobile || isOS("ios", "android", "ipad");
++  // add check for desktop devices
++  const userAgent = navigator.userAgent;
++  const isDesktop = /Windows|Macintosh|Linux/i.test(userAgent);
++  const isNotAndroid = !/Android/i.test(userAgent);
++  if (isDesktop && isNotAndroid) {
++    return false;
++  } else {
++    const width = window2.innerWidth;
++    switch (device) {
++      case "desktop":
++        return width > maxWidth.tablet;
++      case "tablet":
++        return width > maxWidth.mobile;
++      default:
++      case "mobile":
++        return width <= maxWidth.mobile || isOS("ios", "android", "ipad");
++    }
+   }
+ }
+ function media(device) {
