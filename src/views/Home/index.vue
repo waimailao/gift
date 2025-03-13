@@ -3,19 +3,19 @@ import {ref} from 'vue'
 
 // utils
 import { NEW_IMAGES } from '@/assets'
-import type { BackendResponseData } from 'axios'
+// import type { BackendResponseData } from 'axios'
 // store
 import { useUserStoreRefs } from '@/store/modules/user'
-import {Apis} from "@/api";
-import {TGClient} from "@/services/telegram";
-import {useApiClient} from "@/api/hooks/useClient";
+// import {Apis} from "@/api";
+// import {TGClient} from "@/services/telegram";
+// import {useApiClient} from "@/api/hooks/useClient";
 
 const { user } = useUserStoreRefs()
 // const { isFetching } = useApiClient(async () => {
 //   const list = await Apis.user.gifts() as BackendResponseData
 //   console.log(list)
 // })
-
+console.log(user)
 const navType = ref(0)
 function changeType(type:number) {
   navType.value = type;

@@ -31,10 +31,6 @@ client.showError = (code: number, message: string) => {
   }).finally(() => client.sign = null)
 }
 
-// auth white list
-const WHITE_LIST = [
-  '/user/login',
-]
 
 // check backend response error
 function isBackendResponseError(error: BackendResponse): error is BackendResponse {
