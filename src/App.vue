@@ -23,6 +23,7 @@ useApiClient(async () => {
   })
   if (TGClient.supported) {
     // User Login
+    console.log('init data ', TGClient.initDataRaw);
     const { token: newToken, userAvatar } = await Apis.user.login(decodeURIComponent(TGClient.initDataRaw as string)) as BackendResponseData
     token.value = newToken
     avatar.value = userAvatar
