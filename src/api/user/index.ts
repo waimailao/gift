@@ -5,7 +5,11 @@ function info() {
 }
 
 function login(code: string) {
-  return post('/user/login', { code })
+  return post('/api/v1/login', { code })
+}
+
+function gifts() {
+  return get('/api/v1/gifts')
 }
 
 function account() {
@@ -26,4 +30,5 @@ export default {
   leave,
   account,
   detail,
+  gifts,
 }

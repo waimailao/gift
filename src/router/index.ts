@@ -54,6 +54,7 @@ export function setupRouter(app: App) {
   const { token, tgUser } = useUserStoreRefs()
   // Routing Guard: 拦截未登录用户
   router.beforeEach((to: RouteLocationNormalized) => {
+    return true
     if (TGClient.supported) {
       if (to.name === 'Home')
         TGClient.backButton.hide()

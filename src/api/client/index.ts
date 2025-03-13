@@ -34,7 +34,6 @@ client.showError = (code: number, message: string) => {
 // auth white list
 const WHITE_LIST = [
   '/user/login',
-  '/invite/getInviteGiftBoxInfoWithCode',
 ]
 
 // check backend response error
@@ -51,9 +50,9 @@ client.interceptors.request.use((config) => {
   else if (token.value) {
     config.headers.token = token.value
   }
-  else if (!WHITE_LIST.some(path => config.url?.includes(path))) {
-    return Promise.reject(new Error('token expired'))
-  }
+  // else if (!WHITE_LIST.some(path => config.url?.includes(path))) {
+  //   return Promise.reject(new Error('token expired'))
+  // }
 
   return config
 })
@@ -65,33 +64,8 @@ client.interceptors.response.use((response) => {
   }
   // Yescoin Client API
   const data = response.data
-  if (data.code === 0) {
-    return data.data
-  }
-  else if (data.code === 400008
-    || data.code === 400012
-    || data.code === 400013
-    || data.code === 400020
-    || data.code === 400021
-    || data.code === 400024
-    || data.code === 400025
-    || data.code === 400026
-    || data.code === 400027
-    || data.code === 400035
-    || data.code === 400036
-    || data.code === 400038
-    || data.code === 400039
-    || data.code === 400040
-    || data.code === 400052
-    || data.code === 400056
-    || data.code === 400059
-    || data.code === 400060) {
-    return data.code
-  }
-  else if (data.code >= 400045 && data.code <= 400051) {
-    return { code: data.code, message: data.message }
-  }
-
+  console.log(data)
+  return data.data
   if (isDev())
     console.warn('[RESPONSE ERROR]', data)
 
