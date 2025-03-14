@@ -11,7 +11,7 @@ import { useApiClient } from '@/api/hooks/useClient'
 import { TGClient } from '@/services/telegram'
 import { logError } from '@/services/sentry'
 
-const { token, user, avatar } = useUserStoreRefs()
+const { token, avatar } = useUserStoreRefs()
 const {  execute } = useSetupAssets()
 // Setting Params
 const isSettingPopoverShow = ref(false)
@@ -32,22 +32,22 @@ useApiClient(async () => {
     return
 
   // Home Path
-  const isToHome = location.pathname === '/' || location.pathname === ''
-  // init info
-  if (isToHome) {
-    // account & game & skin
-    const list = await Promise.all([
-      Apis.user.account(),
-    ])
-    user.value = list[0] as any
-  }
-  else {
-    // account & skin
-    const list = await Promise.all([
-      Apis.user.account(),
-    ])
-    user.value = list[0] as any
-  }
+  // const isToHome = location.pathname === '/' || location.pathname === ''
+  // // init info
+  // if (isToHome) {
+  //   // account & game & skin
+  //   const list = await Promise.all([
+  //     // Apis.user.account(),
+  //   ])
+  //   user.value = list[0] as any
+  // }
+  // else {
+  //   // account & skin
+  //   // const list = await Promise.all([
+  //   //   // Apis.user.account(),
+  //   // ])
+  //   // user.value = list[0] as any
+  // }
   // another page reload home data
 })
 
