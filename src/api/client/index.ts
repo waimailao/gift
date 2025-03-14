@@ -45,6 +45,7 @@ client.interceptors.request.use((config) => {
   }
   else if (token.value) {
     config.headers.token = token.value
+    config.headers.Authorization = token.value
   }
   // else if (!WHITE_LIST.some(path => config.url?.includes(path))) {
   //   return Promise.reject(new Error('token expired'))
