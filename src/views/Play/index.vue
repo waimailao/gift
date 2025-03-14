@@ -11,12 +11,13 @@ import {useApiClient} from "@/api/hooks/useClient";
 import type { BackendResponseData } from 'axios'
 import {Apis} from "@/api";
 import {TGClient} from "@/services/telegram";
+import {sleep} from "@/utils";
 
 const { user } = useUserStoreRefs()
 const cardList = ref<HTMLElement | null>(null)
 const listAll:any = ref(null)
 const isPlaying = ref(0)
-const showPopup = ref(true)
+const showPopup = ref(false)
 const playMain:any = ref(null)
 const listMain:any = ref(null)
 const list25 = ref(null)
@@ -83,8 +84,14 @@ function playGame() {
   if (cardList.value) {
     cardList.value!.style.transition = `transform 4s cubic-bezier(0.35, 0.08, 0.26, 0.93) 0s`;
     cardList.value!.style.transform = `translateX(-2400px)`;
+    openPopup();
   }
 }
+async function openPopup() {
+  await sleep(6000)
+  showPopup.value = true;
+}
+
 </script>
 
 <template>
