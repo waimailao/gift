@@ -12,6 +12,10 @@ function gifts() {
   return get('/api/v1/gifts')
 }
 
+function check(data: any = null) {
+  return post('/api/v1/tgStar/checkPayment?gift_id=1&transaction_id=123321', data)
+}
+
 function account() {
   return get('/account/getAccountInfo')
 }
@@ -31,4 +35,5 @@ export default {
   account,
   detail,
   gifts,
+  check,
 }
