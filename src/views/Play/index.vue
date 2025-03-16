@@ -2,7 +2,7 @@
 import {ref} from 'vue'
 import { throttle } from 'lodash-es'
 import { Popup } from 'vant'
-
+import PlayPopup from './components/PlayPopup/index.vue'
 
 // utils
 import { NEW_IMAGES } from '@/assets'
@@ -15,6 +15,7 @@ import {sleep} from "@/utils";
 
 const { user } = useUserStoreRefs()
 const cardList = ref<HTMLElement | null>(null)
+const playBox = ref<HTMLElement | null>(null)
 const listAll:any = ref(null)
 const isPlaying = ref(0)
 const showPopup = ref(false)
@@ -29,7 +30,7 @@ const play100 = ref(null)
 useApiClient(async () => {
   const list = await Apis.user.gifts() as BackendResponseData
   listAll.value = list.list_100_percent
-  listMain.value = list.list_tg_star_25
+  listMain.value = list.list_tg_star_25.sort(() => Math.random() - 0.5);
   list25.value = list.list_tg_star_25
   list50.value = list.list_tg_star_50
   list100.value = list.list_tg_star_100
@@ -55,14 +56,15 @@ function changeType(type: number) {
     listMain.value = list100.value
     playMain.value = play100.value
   }
+  listMain.value = listMain.value.sort(() => Math.random() - 0.5);
   console.log(playMain.value)
 }
 
 // Star Payment Interval Init
 const { execute: paymentStatusExecute } = useApiClient(async () => {
-  const detail = await Apis.user.check({}) as any
+  // const detail = await Apis.user.check({}) as any
   isPlaying.value = 2;
-  console.log(detail);
+  // console.log(detail);
   playGame()
 }, { immediate: false, throttleWait: 900 })
 
@@ -81,15 +83,29 @@ const onClickTelegramStarBoost = throttle(() => {
 }, 1000)
 
 function playGame() {
+  const transformLength = (playBox.value!.clientWidth - 48) / 3 * 20 + 8 * 18
+  console.log(transformLength);
   if (cardList.value) {
     cardList.value!.style.transition = `transform 4s cubic-bezier(0.35, 0.08, 0.26, 0.93) 0s`;
-    cardList.value!.style.transform = `translateX(-2400px)`;
+    cardList.value!.style.transform = 'translateX(-' + transformLength + 'px)';
+    console.log('translateX(-' + transformLength + ')');
     openPopup();
   }
 }
 async function openPopup() {
-  await sleep(6000)
+  await sleep(4000)
   showPopup.value = true;
+}
+
+function closePopup() {
+  listMain.value = listMain.value.sort(() => Math.random() - 0.5);
+  const transformLength = (playBox.value!.clientWidth - 48) / 3 - 8
+
+  console.log('translateX(-' + transformLength + ')');
+  cardList.value!.style.transition = `none`;
+  cardList.value!.style.transform = 'translateX(-' + transformLength + 'px)';
+  showPopup.value = false;
+
 }
 
 </script>
@@ -139,7 +155,7 @@ async function openPopup() {
       </div>
     </div>
     <div class="play-detail">
-      <div class="play-box">
+      <div class="play-box" ref="playBox">
         <div ref="cardList" class="play-card-list">
           <div v-for="(i, index) in listMain" :key="index"  class="card">
             <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
@@ -262,28 +278,7 @@ async function openPopup() {
       </div>
     </div>
     <Popup v-model:show="showPopup" class="blue-popup" teleport="#app">
-      <div class="popup-main">
-        <img class="popup-bg" :src="NEW_IMAGES.POPUP_BG" alt="">
-        <div class="popup-content">
-          <div class="popop-zhan">
-
-          </div>
-          <div>
-            <div class="popup-title">
-              恭喜你获得
-            </div>
-            <img class="popup-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-          </div>
-          <div>
-            <div v-on:click="() => showPopup = false" class="popup-button">
-              回到游戏
-            </div>
-            <div class="popup-button bottom-button">
-              我用Star抽中了年度Premium
-            </div>
-          </div>
-        </div>
-      </div>
+      <PlayPopup @handle-close="closePopup" />
     </Popup>
   </div>
 </template>
@@ -421,9 +416,9 @@ async function openPopup() {
       width: 100%;
       gap: 8px;
       padding-top: 15px;
-      transform: translateX(-90px);
+      transform: translateX(calc(( -100% + 70.667px) / 3));
       .card {
-        width: 100px;
+        width: calc((100% - 48px) / 3);
         height: 140px;
         flex-shrink: 0;
         border-radius: 8px;
@@ -532,68 +527,7 @@ async function openPopup() {
   display: flex;
   justify-content: center;
   align-items: center;
-  .popup-main {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    .popup-content {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 100%;
-      padding: 30px 0;
-    }
-    .popop-zhan {
-      height: 110px;
-    }
-    .popup-bg {
-      position: absolute;
-      z-index: 100;
-      left: 0;
-      top: 50%;
-      width: 100%;
-      transform: translateY(calc(-50% - -26px));
-    }
-    .popup-title {
-      color: #F2F2F2;
-      text-align: justify;
-      font-size: 26px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: normal;
-    }
-    .popup-icon {
-      margin-top: 20px;
-      width: 149px;
-    }
-    .popup-button {
-      width: 349px;
-      height: 50px;
-      flex-shrink: 0;
-      border-radius: 10px;
-      background: #3290EC;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #FFF;
-      text-align: justify;
-      font-size: 16px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: normal;
-      &.bottom-button {
-        color: #FFF;
-        text-align: justify;
-        font-family: "PingFang SC";
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 400;
-        margin-top: 10px;
-        line-height: normal;
-      }
-    }
-  }
+
 }
 @keyframes round-beat {
   0% {
