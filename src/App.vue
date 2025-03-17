@@ -11,7 +11,7 @@ import { useApiClient } from '@/api/hooks/useClient'
 import { TGClient } from '@/services/telegram'
 import { logError } from '@/services/sentry'
 
-const { token, avatar } = useUserStoreRefs()
+const { token, avatar, user } = useUserStoreRefs()
 const {  execute } = useSetupAssets()
 // Setting Params
 const isSettingPopoverShow = ref(false)
@@ -28,6 +28,11 @@ useApiClient(async () => {
     token.value = newToken
     avatar.value = userAvatar
   }
+  const list = await Promise.all([
+    Apis.user.account(),
+  ])
+  user.value = list[0] as any
+  console.log(user.value)
   if (!token.value)
     return
 
@@ -36,10 +41,7 @@ useApiClient(async () => {
   // // init info
   // if (isToHome) {
   //   // account & game & skin
-  //   const list = await Promise.all([
-  //     // Apis.user.account(),
-  //   ])
-  //   user.value = list[0] as any
+
   // }
   // else {
   //   // account & skin

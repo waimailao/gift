@@ -87,6 +87,7 @@ console.log(route)
     height: 100px;
     width: 100%;
     position: fixed;
+    background: #010101;
     bottom: 0;
     border-top: 1px solid #C8C1C1;
     display: flex;

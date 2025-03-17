@@ -11,13 +11,25 @@ function login(code: string) {
 function gifts() {
   return get('/api/v1/gifts')
 }
+function topGifts() {
+  return get('/api/v1/topGifts')
+}
 
 function check(data: any = null) {
-  return post('/api/v1/tgStar/checkPayment?gift_id=1&transaction_id=123321', data)
+  return post('/api/v1/checkPayment', data)
+}
+function doLottery(data: any = null) {
+  return post('/api/v1/doLottery/1', data)
 }
 
 function account() {
-  return get('/account/getAccountInfo')
+  return get('/api/v1/me')
+}
+function myGifts() {
+  return get('/api/v1/myGifts')
+}
+function allRankList() {
+  return get('/api/v1/allRankList')
 }
 
 function leave(data: any = null) {
@@ -36,4 +48,8 @@ export default {
   detail,
   gifts,
   check,
+  topGifts,
+  myGifts,
+  doLottery,
+  allRankList,
 }

@@ -40,12 +40,13 @@ function isBackendResponseError(error: BackendResponse): error is BackendRespons
 // Interceptors
 client.interceptors.request.use((config) => {
   const { token } = useUserStoreRefs()
+  config.headers.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZWxlZ3JhbS1naWZ0LWFwaSIsImF1ZCI6InRlbGVncmFtLXVzZXJzIiwiaWF0IjoxNzQyMjE1NjA3LCJuYmYiOjE3NDIyMTU2MDcsImV4cCI6MTc0MjIxOTIwNywidWlkIjoxMSwiYXBwIjoiYXBpIiwiZGF0YSI6eyJ1c2VyX2lkIjoxMSwidGdfaWQiOiIyMjAwNjA3NDk5Iiwibmlja19uYW1lIjoiWXVuX01hIn0sImp0aSI6IjExX2FwaSJ9.M5ItNtbsWilfitiOYlYen8cC3D2NGmybDCW7NNUGpK4'
   if (config.baseURL !== ENV.API_CLIENT_URL) {
     return config
   }
   else if (token.value) {
-    config.headers.token = token.value
-    config.headers.Authorization = 'Bearer ' + token.value
+    // config.headers.token = token.value
+    config.headers.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZWxlZ3JhbS1naWZ0LWFwaSIsImF1ZCI6InRlbGVncmFtLXVzZXJzIiwiaWF0IjoxNzQyMTk3NzcxLCJuYmYiOjE3NDIxOTc3NzEsImV4cCI6MTc0MjIwMTM3MSwidWlkIjo4LCJhcHAiOiJhcGkiLCJkYXRhIjp7InVzZXJfaWQiOjgsInRnX2lkIjoiNjU2MTM1NTU2NyIsIm5pY2tfbmFtZSI6ImNoZW5nbG9uZ193YW5nIn0sImp0aSI6IjhfYXBpIn0.VXMF7dPJcQJOJGdBoG2sMDH669V_Ktl-Tr1mmNn3e-4'
   }
   // else if (!WHITE_LIST.some(path => config.url?.includes(path))) {
   //   return Promise.reject(new Error('token expired'))

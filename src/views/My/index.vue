@@ -5,10 +5,15 @@ import {ref} from 'vue'
 import { NEW_IMAGES } from '@/assets'
 // store
 import { useUserStoreRefs } from '@/store/modules/user'
-
+import {useApiClient} from "@/api/hooks/useClient";
+import {Apis} from "@/api";
+import type { BackendResponseData } from 'axios'
 const { user } = useUserStoreRefs()
 console.log(user)
-
+useApiClient(async () => {
+  const list = await Apis.user.myGifts() as BackendResponseData
+  console.log(list)
+})
 const navType = ref(0)
 function changeType(type: number) {
   navType.value = type;

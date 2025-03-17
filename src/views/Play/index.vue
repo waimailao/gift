@@ -19,26 +19,20 @@ const playBox = ref<HTMLElement | null>(null)
 const listAll:any = ref(null)
 const isPlaying = ref(0)
 const showPopup = ref(false)
-const playMain:any = ref(null)
 const listMain:any = ref(null)
 const list25 = ref(null)
+const invoicelink = ref('')
+const transaction_id = ref(0)
 const list50 = ref(null)
 const list100 = ref(null)
-const play25 = ref(null)
-const play50 = ref(null)
-const play100 = ref(null)
 useApiClient(async () => {
   const list = await Apis.user.gifts() as BackendResponseData
-  listAll.value = list.list_100_percent
-  listMain.value = list.list_tg_star_25.sort(() => Math.random() - 0.5);
-  list25.value = list.list_tg_star_25
-  list50.value = list.list_tg_star_50
-  list100.value = list.list_tg_star_100
-  playMain.value = list.buttons.play_star_25
-  play25.value = list.buttons.play_star_25
-  play50.value = list.buttons.play_star_50
-  play100.value = list.buttons.play_star_100
-  console.log(listAll.value)
+  const listTop = await Apis.user.topGifts() as BackendResponseData
+  listAll.value = listTop.slice(0,5)
+  listMain.value = list[0].gifts.sort(() => Math.random() - 0.5);
+  list25.value = list[0].gifts
+  list50.value = list[1].gifts
+  list100.value = list[2].gifts
 })
 console.log(user)
 const navType = ref(0)
@@ -46,33 +40,39 @@ function changeType(type: number) {
   navType.value = type;
   if (type == 0) {
     listMain.value = list25.value
-    playMain.value = play25.value
   }
   if (type == 1) {
     listMain.value = list50.value
-    playMain.value = play50.value
   }
   if (type == 2) {
     listMain.value = list100.value
-    playMain.value = play100.value
   }
   listMain.value = listMain.value.sort(() => Math.random() - 0.5);
-  console.log(playMain.value)
 }
 
 // Star Payment Interval Init
 const { execute: paymentStatusExecute } = useApiClient(async () => {
-  // const detail = await Apis.user.check({}) as any
-  isPlaying.value = 2;
-  // console.log(detail);
-  playGame()
+  const detail = await Apis.user.check({'transaction_id': transaction_id.value}) as any
+  if (detail.pay_status == 1 && detail.award_status == 1) {
+    playGame()
+    isPlaying.value = 2;
+  }
+  console.log(detail);
+}, { immediate: false, throttleWait: 900 })
+
+const { execute: clickButton } = useApiClient(async () => {
+  const detail = await Apis.user.doLottery({}) as any
+  invoicelink.value = detail.invoicelink;
+  transaction_id.value = detail.transaction_id;
+  console.log(detail);
+  onClickTelegramStarBoost()
 }, { immediate: false, throttleWait: 900 })
 
 // user click telegram star boost
 const onClickTelegramStarBoost = throttle(() => {
   if (isPlaying.value == 2) return;
-  if (playMain.value.invoice_link) {
-    TGClient.shareLink(playMain.value.invoice_link, false)
+  if (invoicelink.value) {
+    TGClient.shareLink(invoicelink.value, false)
     // resume
     isPlaying.value = 1;
     setTimeout(() => {
@@ -100,7 +100,6 @@ async function openPopup() {
 function closePopup() {
   listMain.value = listMain.value.sort(() => Math.random() - 0.5);
   const transformLength = (playBox.value!.clientWidth - 48) / 3 - 8
-
   console.log('translateX(-' + transformLength + ')');
   cardList.value!.style.transition = `none`;
   cardList.value!.style.transform = 'translateX(-' + transformLength + 'px)';
@@ -119,12 +118,12 @@ function closePopup() {
     <div class="card-list">
       <div v-for="(item, i) in listAll" :key="i" class="card">
         <div class="card-chance">
-          {{item.chance * 100 + '%'}}
+          {{item.probability * 100 + '%'}}
         </div>
         <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
         <div class="card-button">
           <div>
-            {{item.start_count}}
+            {{item.star_price}}
           </div>
           <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
         </div>
@@ -157,118 +156,30 @@ function closePopup() {
     <div class="play-detail">
       <div class="play-box" ref="playBox">
         <div ref="cardList" class="play-card-list">
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
+          <div v-for="(i, index) in listMain" :key="index"  class="card" :class="{'hover': index == 2}">
             <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
             <div class="card-button">
               <div>
-                {{i.start_count}}
-              </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            </div>
-          </div>
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            <div class="card-button">
-              <div>
-                {{i.start_count}}
-              </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            </div>
-          </div>
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            <div class="card-button">
-              <div>
-                {{i.start_count}}
-              </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            </div>
-          </div>
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            <div class="card-button">
-              <div>
-                {{i.start_count}}
-              </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            </div>
-          </div>
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            <div class="card-button">
-              <div>
-                {{i.start_count}}
-              </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            </div>
-          </div>
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            <div class="card-button">
-              <div>
-                {{i.start_count}}
-              </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            </div>
-          </div>
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            <div class="card-button">
-              <div>
-                {{i.start_count}}
-              </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            </div>
-          </div>
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            <div class="card-button">
-              <div>
-                {{i.start_count}}
-              </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            </div>
-          </div>
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            <div class="card-button">
-              <div>
-                {{i.start_count}}
-              </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            </div>
-          </div>
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            <div class="card-button">
-              <div>
-                {{i.start_count}}
-              </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            </div>
-          </div>
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            <div class="card-button">
-              <div>
-                {{i.start_count}}
-              </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            </div>
-          </div>
-          <div v-for="(i, index) in listMain" :key="index"  class="card">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-            <div class="card-button">
-              <div>
-                {{i.start_count}}
+                {{i.star_count}}
               </div>
               <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
             </div>
           </div>
         </div>
+        <div class="play-bg">
+          <svg class="play-bg-top" xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M5 6.52197L10 -0.000204086H0L5 6.52197Z" fill="#3290EC"/>
+          </svg>
+          <svg class="play-bg-middle" xmlns="http://www.w3.org/2000/svg" width="2" height="123" viewBox="0 0 2 123" fill="none">
+            <path d="M1 0.5V122.5" stroke="#3290EC" stroke-width="0.5" stroke-linecap="square" stroke-dasharray="4 4"/>
+          </svg>
+          <svg class="play-bg-bottom" xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0L10 6.56853H0L5 0Z" fill="#3290EC"/>
+          </svg>
+        </div>
       </div>
     </div>
-    <div class="play-button" v-on:click="() => onClickTelegramStarBoost()">
+    <div class="play-button" v-on:click="() => clickButton()">
       <div>
         100% winning rate
       </div>
@@ -411,6 +322,7 @@ function closePopup() {
     border-radius: 14px;
     background: #1C1C1E;
     overflow-x: hidden;
+    position: relative;
     .play-card-list {
       display: flex;
       width: 100%;
@@ -429,6 +341,9 @@ function closePopup() {
         flex-direction: column;
         align-items: center;
         padding: 14px 0;
+        &.hover {
+          background: #4C4C4C;
+        }
         .card-icon {
           width: 45px;
           height: 50px;
@@ -462,6 +377,26 @@ function closePopup() {
             height: 12px;
           }
         }
+      }
+    }
+    .play-bg {
+      .play-bg-top {
+        position: absolute;
+        top: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .play-bg-middle {
+        position: absolute;
+        top: 23px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .play-bg-bottom {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
       }
     }
   }

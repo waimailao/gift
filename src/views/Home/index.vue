@@ -4,15 +4,22 @@ import {ref} from 'vue'
 // utils
 import { NEW_IMAGES } from '@/assets'
 // store
-import { useUserStoreRefs } from '@/store/modules/user'
+import {useApiClient} from "@/api/hooks/useClient";
+import type { BackendResponseData } from 'axios'
+import {Apis} from "@/api";
 // import {TGClient} from "@/services/telegram";
-
-const { user } = useUserStoreRefs()
-
-console.log(user)
-const navType = ref(0)
+const listAll:any = ref(null)
+const nowList:any = ref(null)
+useApiClient(async () => {
+  const list = await Apis.user.allRankList() as BackendResponseData
+  listAll.value = list;
+  nowList.value = list[1].ranks;
+  console.log(nowList.value)
+})
+const navType = ref(1)
 function changeType(type:number) {
   navType.value = type;
+  nowList.value = listAll.value[type].ranks;
 }
 </script>
 
@@ -28,19 +35,19 @@ function changeType(type:number) {
       在这里您可以看到最幸运的玩家
     </div>
     <div class="home-nav">
-      <div v-on:click="()=>changeType(0)" class="home-nav-child" :class="{'active': navType == 0}">
+      <div v-on:click="()=>changeType(1)" class="home-nav-child" :class="{'active': navType == 1}">
         <div CLASS="home-nav-title">
           25
         </div>
         <img class="home-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
-      <div v-on:click="()=>changeType(1)" class="home-nav-child" :class="{'active': navType == 1}">
+      <div v-on:click="()=>changeType(2)" class="home-nav-child" :class="{'active': navType == 2}">
         <div CLASS="home-nav-title">
           50
         </div>
         <img class="home-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
-      <div v-on:click="()=>changeType(2)" class="home-nav-child" :class="{'active': navType == 2}">
+      <div v-on:click="()=>changeType(3)" class="home-nav-child" :class="{'active': navType == 3}">
         <div CLASS="home-nav-title">
           100
         </div>
@@ -48,39 +55,24 @@ function changeType(type:number) {
       </div>
     </div>
     <div class="home-list">
-      <div class="list-item">
+      <div  v-for="(item, index) in nowList" :key="index"  class="list-item">
         <div class="avatar">
-          <img :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+          <img :src="item.user.photo_url" alt="">
         </div>
         <div class="list-main">
           <div class="list-content">
             <div class="list-title">
-              Huge Griksg
+              {{item.user.nick_name}}
             </div>
             <div class="list-desc">
-              1190 游戏们•28720火花们•3头奖们
+              {{item.total_cost}}游戏们•{{item.total_award}}火花们•{{item.lottery_count}}头奖们
             </div>
           </div>
           <div class="list-icon">
-            <img :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-          </div>
-        </div>
-      </div>
-      <div class="list-item">
-        <div class="avatar">
-          <img :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-        </div>
-        <div class="list-main">
-          <div class="list-content">
-            <div class="list-title">
-              Huge Griksg
-            </div>
-            <div class="list-desc">
-              1190 游戏们•28720火花们•3头奖们
-            </div>
-          </div>
-          <div class="list-icon">
-            <img :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+            <img v-if="item.rank == 1" :src="NEW_IMAGES.RANK_1" alt="">
+            <img v-else-if="item.rank == 2" :src="NEW_IMAGES.RANK_2" alt="">
+            <img v-else-if="item.rank == 3" :src="NEW_IMAGES.RANK_3" alt="">
+            <img v-else class="rank4" :src="NEW_IMAGES.RANK_4" alt="">
           </div>
         </div>
       </div>
@@ -164,6 +156,7 @@ function changeType(type:number) {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    padding-bottom: 32px;
     .list-item {
       display: flex;
       gap: 5px;
@@ -177,6 +170,7 @@ function changeType(type:number) {
       }
       .list-main {
         display: flex;
+        padding-bottom: 16px;
         border-bottom: 1px solid rgba(217, 217, 217, 0.20);
         padding-right: 44px;
         justify-content: space-between;
@@ -192,6 +186,14 @@ function changeType(type:number) {
           .list-desc {
             color: #999;
             font-size: 11px;
+          }
+        }
+        .list-icon {
+          img {
+            height: 25px;
+            &.rank4 {
+              padding: 0 7px;
+            }
           }
         }
       }
