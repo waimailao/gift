@@ -3,6 +3,7 @@ import {ref} from 'vue'
 import { throttle } from 'lodash-es'
 import { Popup } from 'vant'
 import PlayPopup from './components/PlayPopup/index.vue'
+import { useIntervalFn } from '@vueuse/core'
 
 // utils
 import { NEW_IMAGES } from '@/assets'
@@ -54,6 +55,7 @@ function changeType(type: number) {
 const { execute: paymentStatusExecute } = useApiClient(async () => {
   const detail = await Apis.user.check({'transaction_id': transaction_id.value}) as any
   if (detail.pay_status == 1 && detail.award_status == 1) {
+    starPaymentPause()
     playGame()
     isPlaying.value = 2;
   }
@@ -68,6 +70,10 @@ const { execute: clickButton } = useApiClient(async () => {
   onClickTelegramStarBoost()
 }, { immediate: false, throttleWait: 900 })
 
+const { pause: starPaymentPause, resume: starPaymentResume } = useIntervalFn(() => {
+  paymentStatusExecute();
+}, 1000, { immediate: false })
+
 // user click telegram star boost
 const onClickTelegramStarBoost = throttle(() => {
   if (isPlaying.value == 2) return;
@@ -76,7 +82,7 @@ const onClickTelegramStarBoost = throttle(() => {
     // resume
     isPlaying.value = 1;
     setTimeout(() => {
-      paymentStatusExecute();
+      starPaymentResume();
       console.log(123)
     }, 2000)
   }
