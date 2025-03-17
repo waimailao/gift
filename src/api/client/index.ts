@@ -45,8 +45,7 @@ client.interceptors.request.use((config) => {
     return config
   }
   else if (token.value) {
-    // config.headers.token = token.value
-    config.headers.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZWxlZ3JhbS1naWZ0LWFwaSIsImF1ZCI6InRlbGVncmFtLXVzZXJzIiwiaWF0IjoxNzQyMTk3NzcxLCJuYmYiOjE3NDIxOTc3NzEsImV4cCI6MTc0MjIwMTM3MSwidWlkIjo4LCJhcHAiOiJhcGkiLCJkYXRhIjp7InVzZXJfaWQiOjgsInRnX2lkIjoiNjU2MTM1NTU2NyIsIm5pY2tfbmFtZSI6ImNoZW5nbG9uZ193YW5nIn0sImp0aSI6IjhfYXBpIn0.VXMF7dPJcQJOJGdBoG2sMDH669V_Ktl-Tr1mmNn3e-4'
+    config.headers.token = token.value
   }
   // else if (!WHITE_LIST.some(path => config.url?.includes(path))) {
   //   return Promise.reject(new Error('token expired'))
