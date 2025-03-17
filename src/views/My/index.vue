@@ -78,56 +78,11 @@ function changeType(type: number) {
     </Skeleton>
     <div v-else class="card-list">
       <div  v-for="(item, index) in myList" :index="index" class="card">
-        <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+        <img class="card-icon" :src="NEW_IMAGES.GIFT_ID.replace('giftid', item.gifts.gift_tg_id)" alt="">
         <img class="card-icon-tag" :src="NEW_IMAGES.GIFT_TAG" alt="">
         <div class="card-button">
           <div>
             {{item.award_star}}
-          </div>
-          <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-        </div>
-      </div>
-      <div class="card">
-        <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-        <div class="card-button">
-          <div>
-            15
-          </div>
-          <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-        </div>
-      </div>
-      <div class="card">
-        <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-        <div class="card-button">
-          <div>
-            15
-          </div>
-          <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-        </div>
-      </div>
-      <div class="card">
-        <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-        <div class="card-button">
-          <div>
-            15
-          </div>
-          <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-        </div>
-      </div>
-      <div class="card">
-        <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-        <div class="card-button">
-          <div>
-            15
-          </div>
-          <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-        </div>
-      </div>
-      <div class="card">
-        <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
-        <div class="card-button">
-          <div>
-            15
           </div>
           <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
         </div>

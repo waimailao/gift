@@ -24,6 +24,7 @@ const isPlaying = ref(0)
 const showPopup = ref(false)
 const listMain:any = ref(null)
 const list25 = ref(null)
+const animation = ref('')
 const invoicelink = ref('')
 const transaction_id = ref(0)
 const list50 = ref(null)
@@ -32,6 +33,7 @@ const canClick = ref(true)
 const { isFetching } = useApiClient(async () => {
   const list = await Apis.user.gifts() as BackendResponseData
   const listTop = await Apis.user.topGifts() as BackendResponseData
+  console.log(listTop);
   listAll.value = listTop.slice(0,5)
   listMain.value = list[0].gifts.sort(() => Math.random() - 0.5);
   list25.value = list[0].gifts
@@ -58,12 +60,12 @@ function changeType(type: number) {
 const { execute: paymentStatusExecute } = useApiClient(async () => {
   const detail = await Apis.user.check({'transaction_id': transaction_id.value}) as any
   if (detail.pay_status == 1 && detail.award_status == 1) {
+    animation.value = detail.gifts.gift_animation;
     starPaymentPause()
     playGame()
     isPlaying.value = 2;
     canClick.value = true;
   }
-  console.log(detail);
 }, { immediate: false, throttleWait: 900 })
 
 const { execute: clickButton } = useApiClient(async () => {
@@ -96,7 +98,7 @@ const onClickTelegramStarBoost = throttle(() => {
 
 function playGame() {
   const transformLength = (playBox.value!.clientWidth - 48) / 3 * 20 + 8 * 18
-  console.log(transformLength);
+  cardList.value.children[2].classList.remove('hover')
   if (cardList.value) {
     cardList.value!.style.transition = `transform 4s cubic-bezier(0.35, 0.08, 0.26, 0.93) 0s`;
     cardList.value!.style.transform = 'translateX(-' + transformLength + 'px)';
@@ -106,6 +108,7 @@ function playGame() {
 }
 async function openPopup() {
   await sleep(4000)
+  cardList.value.children[18].classList.add('hover')
   showPopup.value = true;
 }
 
@@ -115,6 +118,7 @@ function closePopup() {
   console.log('translateX(-' + transformLength + ')');
   cardList.value!.style.transition = `none`;
   cardList.value!.style.transform = 'translateX(-' + transformLength + 'px)';
+  cardList.value.children[2].classList.add('hover')
   showPopup.value = false;
 }
 
@@ -143,9 +147,9 @@ function closePopup() {
     <div v-else class="card-list">
       <div v-for="(item, i) in listAll" :key="i" class="card">
         <div class="card-chance">
-          {{item.probability * 100 + '%'}}
+          {{Math.floor(item.probability * 100) + '%'}}
         </div>
-        <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+        <img class="card-icon" :src="NEW_IMAGES.GIFT_ID.replace('giftid', item.gift_tg_id)" alt="">
         <div class="card-button">
           <div>
             {{item.star_price}}
@@ -195,8 +199,8 @@ function closePopup() {
           </template>
         </Skeleton>
         <div ref="cardList" class="play-card-list">
-          <div v-for="(i, index) in listMain" :key="index"  class="card" :class="{'hover': index == 2}">
-            <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+          <div v-for="(i, index) in listMain" :index="index" :key="index"  class="card" :class="{'hover': index == 2}">
+            <img class="card-icon" :src="NEW_IMAGES.GIFT_ID.replace('giftid', i.gift_tg_id)" alt="">
             <div class="card-button">
               <div>
                 {{i.star_count}}
@@ -228,7 +232,7 @@ function closePopup() {
       </div>
     </div>
     <Popup v-model:show="showPopup" class="blue-popup" teleport="#app">
-      <PlayPopup @handle-close="closePopup" />
+      <PlayPopup :animation="animation" @handle-close="closePopup" />
     </Popup>
   </div>
 </template>

@@ -8,11 +8,13 @@ import RANK_1 from './rank1.png'
 import RANK_2 from './rank2.png'
 import RANK_3 from './rank3.png'
 import RANK_4 from './rank4.png'
+import GIFT_ID from './giftid.png'
 export const NEW_IMAGES = {
   HOME_COIN,
   HOME_NAV_COIN,
   POPUP_BG,
   GIFT_TAG,
+  GIFT_ID,
   DICE,
   ROUND,
   RANK_1,

@@ -1,22 +1,30 @@
 <script setup lang="ts">
-import {ref, onMounted, nextTick} from 'vue'
+import {ref, onMounted, nextTick,toRefs} from 'vue'
 import lottie from 'lottie-web'
 import { NEW_IMAGES } from '@/assets'
-
+interface Props {
+  animation?: string
+}
+const props = withDefaults(defineProps<Props>(), {
+  animation: '',
+})
+const { animation } = toRefs(props)
 const emits = defineEmits(['handleClose'])
 const lottieDiv = ref<HTMLElement | null>(null)
 
 onMounted(async () => {
   await nextTick()
   if (lottieDiv.value) {
-    const animation = lottie.loadAnimation({
+    console.log(animation.value)
+
+    const animations = lottie.loadAnimation({
       container: lottieDiv.value, // the dom element that will contain the animation
       renderer: 'svg',
       loop: true,
       autoplay: true,
-      path: 'data.json'
+      animationData: JSON.parse(animation.value)
     });
-    animation.play();
+    animations.play();
   }
 })
 

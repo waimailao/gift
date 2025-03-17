@@ -40,7 +40,7 @@ function isBackendResponseError(error: BackendResponse): error is BackendRespons
 // Interceptors
 client.interceptors.request.use((config) => {
   const { token } = useUserStoreRefs()
-  config.headers.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZWxlZ3JhbS1naWZ0LWFwaSIsImF1ZCI6InRlbGVncmFtLXVzZXJzIiwiaWF0IjoxNzQyMjI3NjczLCJuYmYiOjE3NDIyMjc2NzMsImV4cCI6MTc0MjIzMTI3MywidWlkIjo4LCJhcHAiOiJhcGkiLCJkYXRhIjp7InVzZXJfaWQiOjgsInRnX2lkIjoiNjU2MTM1NTU2NyIsIm5pY2tfbmFtZSI6ImNoZW5nbG9uZ193YW5nIn0sImp0aSI6IjhfYXBpIn0.ml6TmUGAff3JgJZmth0ypCDzKPbC3twaxrvpptqq55U'
+  config.headers.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZWxlZ3JhbS1naWZ0LWFwaSIsImF1ZCI6InRlbGVncmFtLXVzZXJzIiwiaWF0IjoxNzQyMjMzMTM4LCJuYmYiOjE3NDIyMzMxMzgsImV4cCI6MTc0MjIzNjczOCwidWlkIjo4LCJhcHAiOiJhcGkiLCJkYXRhIjp7InVzZXJfaWQiOjgsInRnX2lkIjoiNjU2MTM1NTU2NyIsIm5pY2tfbmFtZSI6ImNoZW5nbG9uZ193YW5nIn0sImp0aSI6IjhfYXBpIn0.wcBCR5EH1kTmR4pqS1Xnwz0BQQsV0RQN6XGYAMDYSv8'
   if (config.baseURL !== ENV.API_CLIENT_URL) {
     return config
   }
