@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import { throttle } from 'lodash-es'
+import {Skeleton} from 'vant'
+
 import { Popup } from 'vant'
 import PlayPopup from './components/PlayPopup/index.vue'
 import { useIntervalFn } from '@vueuse/core'
@@ -26,7 +28,8 @@ const invoicelink = ref('')
 const transaction_id = ref(0)
 const list50 = ref(null)
 const list100 = ref(null)
-useApiClient(async () => {
+const canClick = ref(true)
+const { isFetching } = useApiClient(async () => {
   const list = await Apis.user.gifts() as BackendResponseData
   const listTop = await Apis.user.topGifts() as BackendResponseData
   listAll.value = listTop.slice(0,5)
@@ -58,11 +61,14 @@ const { execute: paymentStatusExecute } = useApiClient(async () => {
     starPaymentPause()
     playGame()
     isPlaying.value = 2;
+    canClick.value = true;
   }
   console.log(detail);
 }, { immediate: false, throttleWait: 900 })
 
 const { execute: clickButton } = useApiClient(async () => {
+  if (!canClick.value) return;
+  canClick.value = false;
   const detail = await Apis.user.doLottery({}) as any
   invoicelink.value = detail.invoicelink;
   transaction_id.value = detail.transaction_id;
@@ -110,7 +116,6 @@ function closePopup() {
   cardList.value!.style.transition = `none`;
   cardList.value!.style.transform = 'translateX(-' + transformLength + 'px)';
   showPopup.value = false;
-
 }
 
 </script>
@@ -120,8 +125,22 @@ function closePopup() {
     <div class="play-title">
       您可以100%获得奖品
     </div>
+    <Skeleton v-if="isFetching" class="card-list" loading>
+      <template #template>
+        <div class="card">
+        </div>
+        <div class="card">
+        </div>
+        <div class="card">
+        </div>
+        <div class="card">
+        </div>
+        <div class="card">
+        </div>
+      </template>
+    </Skeleton>
 
-    <div class="card-list">
+    <div v-else class="card-list">
       <div v-for="(item, i) in listAll" :key="i" class="card">
         <div class="card-chance">
           {{item.probability * 100 + '%'}}
@@ -161,6 +180,20 @@ function closePopup() {
     </div>
     <div class="play-detail">
       <div class="play-box" ref="playBox">
+        <Skeleton v-if="isFetching" class="play-card-list" loading>
+          <template #template>
+            <div class="card">
+            </div>
+            <div class="card">
+            </div>
+            <div class="card">
+            </div>
+            <div class="card">
+            </div>
+            <div class="card">
+            </div>
+          </template>
+        </Skeleton>
         <div ref="cardList" class="play-card-list">
           <div v-for="(i, index) in listMain" :key="index"  class="card" :class="{'hover': index == 2}">
             <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {ref} from 'vue'
+import {Skeleton, SkeletonAvatar, SkeletonParagraph } from 'vant'
 
 // utils
 import { NEW_IMAGES } from '@/assets'
@@ -10,7 +11,7 @@ import {Apis} from "@/api";
 // import {TGClient} from "@/services/telegram";
 const listAll:any = ref(null)
 const nowList:any = ref(null)
-useApiClient(async () => {
+const { isFetching } = useApiClient(async () => {
   const list = await Apis.user.allRankList() as BackendResponseData
   listAll.value = list;
   nowList.value = list[1].ranks;
@@ -54,7 +55,83 @@ function changeType(type:number) {
         <img class="home-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
     </div>
-    <div class="home-list">
+    <Skeleton v-if="isFetching" class="home-list" loading>
+      <template #template>
+        <div class="list-item">
+          <div class="avatar">
+            <SkeletonAvatar class="avatar" />
+          </div>
+          <div class="list-main">
+            <div class="list-content">
+              <div class="list-title skeleton">
+                <SkeletonParagraph  />
+              </div>
+              <div class="list-desc skeleton">
+                <SkeletonParagraph />
+              </div>
+            </div>
+            <div class="list-icon">
+              <img :src="NEW_IMAGES.RANK_1" alt="">
+            </div>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="avatar">
+            <SkeletonAvatar class="avatar" />
+          </div>
+          <div class="list-main">
+            <div class="list-content">
+              <div class="list-title skeleton">
+                <SkeletonParagraph  />
+              </div>
+              <div class="list-desc skeleton">
+                <SkeletonParagraph />
+              </div>
+            </div>
+            <div class="list-icon">
+              <img :src="NEW_IMAGES.RANK_2" alt="">
+            </div>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="avatar">
+            <SkeletonAvatar class="avatar" />
+          </div>
+          <div class="list-main">
+            <div class="list-content">
+              <div class="list-title skeleton">
+                <SkeletonParagraph  />
+              </div>
+              <div class="list-desc skeleton">
+                <SkeletonParagraph />
+              </div>
+            </div>
+            <div class="list-icon">
+              <img :src="NEW_IMAGES.RANK_3" alt="">
+            </div>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="avatar">
+            <SkeletonAvatar class="avatar" />
+          </div>
+          <div class="list-main">
+            <div class="list-content">
+              <div class="list-title skeleton">
+                <SkeletonParagraph  />
+              </div>
+              <div class="list-desc skeleton">
+                <SkeletonParagraph />
+              </div>
+            </div>
+            <div class="list-icon">
+              <img class="rank4" :src="NEW_IMAGES.RANK_4" alt="">
+            </div>
+          </div>
+        </div>
+      </template>
+    </Skeleton>
+    <div v-else class="home-list">
       <div  v-for="(item, index) in nowList" :key="index"  class="list-item">
         <div class="avatar">
           <img :src="item.user.photo_url" alt="">
@@ -157,6 +234,7 @@ function changeType(type:number) {
     flex-direction: column;
     gap: 8px;
     padding-bottom: 32px;
+    padding-right: 0;
     .list-item {
       display: flex;
       gap: 5px;
@@ -166,6 +244,7 @@ function changeType(type:number) {
         img  {
           width: 100%;
           height: 100%;
+          border-radius: 17px;
         }
       }
       .list-main {
@@ -179,16 +258,28 @@ function changeType(type:number) {
           display: flex;
           flex-direction: column;
           gap: 8px;
+          &.skeleton {
+            gap: 0;
+          }
           .list-title {
             color: #FFF;
             font-size: 14px;
+            &.skeleton {
+              width: 80px;
+            }
           }
           .list-desc {
             color: #999;
             font-size: 11px;
+            &.skeleton {
+              width: 120px;
+            }
           }
         }
         .list-icon {
+          &.skeleton {
+            height: 25px;
+          }
           img {
             height: 25px;
             &.rank4 {

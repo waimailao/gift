@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-
+import {Skeleton, SkeletonAvatar } from 'vant'
 // utils
 import { NEW_IMAGES } from '@/assets'
 // store
@@ -10,8 +10,10 @@ import {Apis} from "@/api";
 import type { BackendResponseData } from 'axios'
 const { user } = useUserStoreRefs()
 console.log(user)
-useApiClient(async () => {
+const myList:any = ref(null)
+const { isFetching } = useApiClient(async () => {
   const list = await Apis.user.myGifts() as BackendResponseData
+  myList.value = list.data;
   console.log(list)
 })
 const navType = ref(0)
@@ -22,9 +24,15 @@ function changeType(type: number) {
 
 <template>
   <div class="main">
-    <div class="my-icon">
-      <img :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+    <Skeleton v-if="isFetching" loading>
+      <template #template>
+        <SkeletonAvatar  class="my-icon" />
+      </template>
+    </Skeleton>
+    <div v-else class="my-icon">
+      <img :src="user.photo_url" alt="">
     </div>
+
     <div class="my-title">
       排行榜
     </div>
@@ -48,13 +56,33 @@ function changeType(type: number) {
         <div class="my-nav-bottom" />
       </div>
     </div>
-    <div class="card-list">
-      <div class="card">
+    <Skeleton v-if="isFetching" class="card-list" loading>
+      <template #template>
+        <div class="card">
+        </div>
+        <div class="card">
+        </div>
+        <div class="card">
+        </div>
+        <div class="card">
+        </div>
+        <div class="card">
+        </div>
+        <div class="card">
+        </div>
+        <div class="card">
+        </div>
+        <div class="card">
+        </div>
+      </template>
+    </Skeleton>
+    <div v-else class="card-list">
+      <div  v-for="(item, index) in myList" :index="index" class="card">
         <img class="card-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
         <img class="card-icon-tag" :src="NEW_IMAGES.GIFT_TAG" alt="">
         <div class="card-button">
           <div>
-            15
+            {{item.award_star}}
           </div>
           <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
         </div>

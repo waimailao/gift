@@ -78,7 +78,7 @@ console.log(route)
   .launch-content {
     position: relative;
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     overflow: auto;
     overscroll-behavior: none;
     background: #010101;
