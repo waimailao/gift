@@ -98,7 +98,7 @@ const onClickTelegramStarBoost = throttle(() => {
 
 function playGame() {
   const transformLength = (playBox.value!.clientWidth - 48) / 3 * 20 + 8 * 18
-  cardList.value.children[2].classList.remove('hover')
+  cardList.value!.children[2].classList.remove('hover')
   if (cardList.value) {
     cardList.value!.style.transition = `transform 4s cubic-bezier(0.35, 0.08, 0.26, 0.93) 0s`;
     cardList.value!.style.transform = 'translateX(-' + transformLength + 'px)';
@@ -108,7 +108,7 @@ function playGame() {
 }
 async function openPopup() {
   await sleep(4000)
-  cardList.value.children[18].classList.add('hover')
+  cardList.value!.children[18].classList.add('hover')
   showPopup.value = true;
 }
 
@@ -118,7 +118,7 @@ function closePopup() {
   console.log('translateX(-' + transformLength + ')');
   cardList.value!.style.transition = `none`;
   cardList.value!.style.transform = 'translateX(-' + transformLength + 'px)';
-  cardList.value.children[2].classList.add('hover')
+  cardList.value!.children[2].classList.add('hover')
   showPopup.value = false;
 }
 
