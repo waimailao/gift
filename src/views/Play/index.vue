@@ -239,6 +239,8 @@ function closePopup() {
   flex-direction: column;
   align-items: center;
   font-family: 'OPPOSansBold';
+  min-height: 100%;
+  padding-bottom: 120px;
   .play-title {
     display: flex;
     justify-content: left;
