@@ -145,6 +145,7 @@ function closePopup() {
           {{Math.floor(item.probability * 100) + '%'}}
         </div>
         <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(item.gift_tg_id))].icon" alt="">
+<!--        <img class="card-icon-tag" v-if="item.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">-->
         <div class="card-button">
           <div>
             {{item.star_price}}
@@ -195,6 +196,7 @@ function closePopup() {
         <div ref="cardList" class="play-card-list">
           <div v-for="(i, index) in listMain" :index="index" :key="index"  class="card" :class="{'hover': index == 2}">
             <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(i.gift_tg_id))].icon" alt="">
+            <img class="card-icon-tag" v-if="i.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">
             <div class="card-button">
               <div>
                 {{i.star_price}}
@@ -291,6 +293,14 @@ function closePopup() {
         height: 40px;
         margin-top: 7px;
       }
+      .card-icon-tag {
+        width: 34px;
+        height: 34px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 9;
+      }
       .card-button {
         margin-top: 5px;
         width: 45px;
@@ -386,8 +396,8 @@ function closePopup() {
           height: 50px;
         }
         .card-icon-tag {
-          width: 34px;
-          height: 34px;
+          width: 43px;
+          height: 43px;
           position: absolute;
           right: 0;
           top: 0;
