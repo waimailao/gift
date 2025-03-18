@@ -10,12 +10,10 @@ import {useApiClient} from "@/api/hooks/useClient";
 import {Apis} from "@/api";
 import type { BackendResponseData } from 'axios'
 const { user } = useUserStoreRefs()
-console.log(user)
 const myList:any = ref(null)
 const { isFetching } = useApiClient(async () => {
   const list = await Apis.user.myGifts() as BackendResponseData
   myList.value = list.data;
-  console.log(list)
 })
 const navType = ref(0)
 function changeType(type: number) {

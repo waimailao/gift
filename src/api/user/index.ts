@@ -18,8 +18,8 @@ function topGifts() {
 function check(data: any = null) {
   return post('/api/v1/checkPayment', data)
 }
-function doLottery(data: any = null) {
-  return post('/api/v1/doLottery/1', data)
+function doLottery(data: any = null, type: number = 1) {
+  return post('/api/v1/doLottery/' + type, data)
 }
 
 function account() {

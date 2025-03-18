@@ -40,7 +40,7 @@ function isBackendResponseError(error: BackendResponse): error is BackendRespons
 // Interceptors
 client.interceptors.request.use((config) => {
   const { token } = useUserStoreRefs()
-  config.headers.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZWxlZ3JhbS1naWZ0LWFwaSIsImF1ZCI6InRlbGVncmFtLXVzZXJzIiwiaWF0IjoxNzQyMjMzMTM4LCJuYmYiOjE3NDIyMzMxMzgsImV4cCI6MTc0MjIzNjczOCwidWlkIjo4LCJhcHAiOiJhcGkiLCJkYXRhIjp7InVzZXJfaWQiOjgsInRnX2lkIjoiNjU2MTM1NTU2NyIsIm5pY2tfbmFtZSI6ImNoZW5nbG9uZ193YW5nIn0sImp0aSI6IjhfYXBpIn0.wcBCR5EH1kTmR4pqS1Xnwz0BQQsV0RQN6XGYAMDYSv8'
+  config.headers.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZWxlZ3JhbS1naWZ0LWFwaSIsImF1ZCI6InRlbGVncmFtLXVzZXJzIiwiaWF0IjoxNzQyMjU5NTkwLCJuYmYiOjE3NDIyNTk1OTAsImV4cCI6MTc0MjI2MzE5MCwidWlkIjoxMywiYXBwIjoiYXBpIiwiZGF0YSI6eyJ1c2VyX2lkIjoxMywidGdfaWQiOiI2NTYxMzU1NTY3Iiwibmlja19uYW1lIjoiY2hlbmdsb25nX3dhbmcifSwianRpIjoiMTNfYXBpIn0.ZGgb-9S6RHD24nqnh0sUVSmeKqWtbGJIbCVX7_ImpIo'
   if (config.baseURL !== ENV.API_CLIENT_URL) {
     return config
   }
@@ -61,7 +61,6 @@ client.interceptors.response.use((response) => {
   }
   // Yescoin Client API
   const data = response.data
-  console.log(data)
   return data.data
   if (isDev())
     console.warn('[RESPONSE ERROR]', data)

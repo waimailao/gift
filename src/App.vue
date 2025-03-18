@@ -23,7 +23,6 @@ useApiClient(async () => {
   })
   if (TGClient.supported) {
     // User Login
-    console.log('init data ', TGClient.initDataRaw);
     const { token: newToken, userAvatar } = await Apis.user.login(decodeURIComponent(TGClient.initDataRaw as string)) as BackendResponseData
     token.value = newToken
     avatar.value = userAvatar
@@ -32,7 +31,6 @@ useApiClient(async () => {
     Apis.user.account(),
   ])
   user.value = list[0] as any
-  console.log(user.value)
   if (!token.value)
     return
 

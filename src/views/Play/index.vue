@@ -10,18 +10,15 @@ import { useIntervalFn } from '@vueuse/core'
 
 // utils
 import { NEW_IMAGES } from '@/assets'
-import { useUserStoreRefs } from '@/store/modules/user'
 import {useApiClient} from "@/api/hooks/useClient";
 import type { BackendResponseData } from 'axios'
 import {Apis} from "@/api";
 import {TGClient} from "@/services/telegram";
 import {sleep} from "@/utils";
 
-const { user } = useUserStoreRefs()
 const cardList = ref<HTMLElement | null>(null)
 const playBox = ref<HTMLElement | null>(null)
 const listAll:any = ref(null)
-const isPlaying = ref(0)
 const showPopup = ref(false)
 const listMain:any = ref(null)
 const list25 = ref(null)
@@ -34,24 +31,22 @@ const canClick = ref(true)
 const { isFetching } = useApiClient(async () => {
   const list = await Apis.user.gifts() as BackendResponseData
   const listTop = await Apis.user.topGifts() as BackendResponseData
-  console.log(listTop);
   listAll.value = listTop.slice(0,5)
-  listMain.value = list[0].gifts.sort(() => Math.random() - 0.5);
-  list25.value = list[0].gifts
-  list50.value = list[1].gifts
-  list100.value = list[2].gifts
+  listMain.value = list[0].gifts.concat(list[0].gifts).concat(list[0].gifts).sort(() => Math.random() - 0.5);
+  list25.value = list[0].gifts.concat(list[0].gifts).concat(list[0].gifts);
+  list50.value = list[1].gifts.concat(list[1].gifts).concat(list[1].gifts)
+  list100.value = list[2].gifts.concat(list[2].gifts).concat(list[2].gifts)
 })
-console.log(user)
-const navType = ref(0)
+const navType = ref(1)
 function changeType(type: number) {
   navType.value = type;
-  if (type == 0) {
+  if (type == 1) {
     listMain.value = list25.value
   }
-  if (type == 1) {
+  if (type == 2) {
     listMain.value = list50.value
   }
-  if (type == 2) {
+  if (type == 3) {
     listMain.value = list100.value
   }
   listMain.value = listMain.value.sort(() => Math.random() - 0.5);
@@ -60,22 +55,24 @@ function changeType(type: number) {
 // Star Payment Interval Init
 const { execute: paymentStatusExecute } = useApiClient(async () => {
   const detail = await Apis.user.check({'transaction_id': transaction_id.value}) as any
+  // const detail = await Apis.user.check({'transaction_id': '742545834956033361'}) as any
   if (detail.pay_status == 1 && detail.award_status == 1) {
+    listMain.value[21].star_price = detail.gifts.star_price;
+    listMain.value[21].gift_tg_id = detail.gifts.gift_tg_id;
+    listMain.value[21].is_limit = detail.gifts.is_limit;
     animation.value = detail.gifts.gift_animation;
     starPaymentPause()
     playGame()
-    isPlaying.value = 2;
-    canClick.value = true;
   }
 }, { immediate: false, throttleWait: 900 })
 
 const { execute: clickButton } = useApiClient(async () => {
   if (!canClick.value) return;
   canClick.value = false;
-  const detail = await Apis.user.doLottery({}) as any
+  const detail = await Apis.user.doLottery({}, navType.value) as any
   invoicelink.value = detail.invoicelink;
   transaction_id.value = detail.transaction_id;
-  console.log(detail);
+
   onClickTelegramStarBoost()
 }, { immediate: false, throttleWait: 900 })
 
@@ -85,14 +82,11 @@ const { pause: starPaymentPause, resume: starPaymentResume } = useIntervalFn(() 
 
 // user click telegram star boost
 const onClickTelegramStarBoost = throttle(() => {
-  if (isPlaying.value == 2) return;
   if (invoicelink.value) {
     TGClient.shareLink(invoicelink.value, false)
     // resume
-    isPlaying.value = 1;
     setTimeout(() => {
       starPaymentResume();
-      console.log(123)
     }, 2000)
   }
 }, 1000)
@@ -103,20 +97,20 @@ function playGame() {
   if (cardList.value) {
     cardList.value!.style.transition = `transform 4s cubic-bezier(0.35, 0.08, 0.26, 0.93) 0s`;
     cardList.value!.style.transform = 'translateX(-' + transformLength + 'px)';
-    console.log('translateX(-' + transformLength + ')');
     openPopup();
   }
 }
 async function openPopup() {
-  await sleep(4000)
-  cardList.value!.children[18].classList.add('hover')
+  await sleep(3850)
+  cardList.value!.children[21].classList.add('hover')
+  await sleep(250)
   showPopup.value = true;
+  canClick.value = true;
 }
 
 function closePopup() {
   listMain.value = listMain.value.sort(() => Math.random() - 0.5);
   const transformLength = (playBox.value!.clientWidth - 48) / 3 - 8
-  console.log('translateX(-' + transformLength + ')');
   cardList.value!.style.transition = `none`;
   cardList.value!.style.transform = 'translateX(-' + transformLength + 'px)';
   cardList.value!.children[2].classList.add('hover')
@@ -163,19 +157,19 @@ function closePopup() {
       参与游戏
     </div>
     <div class="play-nav">
-      <div v-on:click="()=>changeType(0)" class="play-nav-child" :class="{'active': navType == 0}">
+      <div v-on:click="()=>changeType(1)" class="play-nav-child" :class="{'active': navType == 1}">
         <div CLASS="play-nav-title">
           25
         </div>
         <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
-      <div v-on:click="()=>changeType(1)" class="play-nav-child" :class="{'active': navType == 1}">
+      <div v-on:click="()=>changeType(2)" class="play-nav-child" :class="{'active': navType == 2}">
         <div CLASS="play-nav-title">
           50
         </div>
         <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
-      <div v-on:click="()=>changeType(2)" class="play-nav-child" :class="{'active': navType == 2}">
+      <div v-on:click="()=>changeType(3)" class="play-nav-child" :class="{'active': navType == 3}">
         <div CLASS="play-nav-title">
           100
         </div>
@@ -203,7 +197,7 @@ function closePopup() {
             <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(i.gift_tg_id))].icon" alt="">
             <div class="card-button">
               <div>
-                {{i.star_count}}
+                {{i.star_price}}
               </div>
               <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
             </div>

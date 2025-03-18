@@ -15,7 +15,6 @@ const { isFetching } = useApiClient(async () => {
   const list = await Apis.user.allRankList() as BackendResponseData
   listAll.value = list;
   nowList.value = list[1].ranks;
-  console.log(nowList.value)
 })
 const navType = ref(1)
 function changeType(type:number) {

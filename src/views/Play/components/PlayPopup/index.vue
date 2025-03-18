@@ -15,8 +15,6 @@ const lottieDiv = ref<HTMLElement | null>(null)
 onMounted(async () => {
   await nextTick()
   if (lottieDiv.value) {
-    console.log(animation.value)
-
     const animations = lottie.loadAnimation({
       container: lottieDiv.value, // the dom element that will contain the animation
       renderer: 'svg',
