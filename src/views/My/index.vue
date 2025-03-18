@@ -3,6 +3,7 @@ import {ref} from 'vue'
 import {Skeleton, SkeletonAvatar } from 'vant'
 // utils
 import { NEW_IMAGES } from '@/assets'
+import { TG_ICON } from '@/constants/is'
 // store
 import { useUserStoreRefs } from '@/store/modules/user'
 import {useApiClient} from "@/api/hooks/useClient";
@@ -78,7 +79,7 @@ function changeType(type: number) {
     </Skeleton>
     <div v-else class="card-list">
       <div  v-for="(item, index) in myList" :index="index" class="card">
-        <img class="card-icon" :src="NEW_IMAGES.GIFT_ID.replace('giftid', item.gifts.gift_tg_id)" alt="">
+        <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(item.gifts.gift_tg_id))].icon" alt="">
         <img class="card-icon-tag" :src="NEW_IMAGES.GIFT_TAG" alt="">
         <div class="card-button">
           <div>

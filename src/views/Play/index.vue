@@ -4,6 +4,7 @@ import { throttle } from 'lodash-es'
 import {Skeleton} from 'vant'
 
 import { Popup } from 'vant'
+import { TG_ICON } from '@/constants/is'
 import PlayPopup from './components/PlayPopup/index.vue'
 import { useIntervalFn } from '@vueuse/core'
 
@@ -149,7 +150,7 @@ function closePopup() {
         <div class="card-chance">
           {{Math.floor(item.probability * 100) + '%'}}
         </div>
-        <img class="card-icon" :src="NEW_IMAGES.GIFT_ID.replace('giftid', item.gift_tg_id)" alt="">
+        <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(item.gift_tg_id))].icon" alt="">
         <div class="card-button">
           <div>
             {{item.star_price}}
@@ -157,7 +158,6 @@ function closePopup() {
           <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
         </div>
       </div>
-
     </div>
     <div class="play-title second">
       参与游戏
@@ -200,7 +200,7 @@ function closePopup() {
         </Skeleton>
         <div ref="cardList" class="play-card-list">
           <div v-for="(i, index) in listMain" :index="index" :key="index"  class="card" :class="{'hover': index == 2}">
-            <img class="card-icon" :src="NEW_IMAGES.GIFT_ID.replace('giftid', i.gift_tg_id)" alt="">
+            <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(i.gift_tg_id))].icon" alt="">
             <div class="card-button">
               <div>
                 {{i.star_count}}
