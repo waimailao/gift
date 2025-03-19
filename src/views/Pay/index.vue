@@ -1,0 +1,189 @@
+<script setup lang="ts">
+import {ref} from 'vue'
+import {showNotify } from 'vant'
+import { useIntervalFn } from '@vueuse/core'
+// utils
+import { NEW_IMAGES } from '@/assets'
+// store
+import {useApiClient} from "@/api/hooks/useClient";
+import type { BackendResponseData } from 'axios'
+import {Apis} from "@/api";
+import {throttle} from "lodash-es";
+import {TGClient} from "@/services/telegram";
+import {useUserStoreRefs} from "@/store/modules/user";
+// import {TGClient} from "@/services/telegram";
+const { user } = useUserStoreRefs()
+const list:any = ref(null)
+const canClick = ref(true)
+const invoicelink = ref('')
+const transaction_id = ref(0)
+useApiClient(async () => {
+  const lists = await Apis.user.strIntegralList() as BackendResponseData
+  list.value = lists;
+  console.log(lists);
+})
+const { execute: paymentStatusExecute } = useApiClient(async () => {
+  const detail = await Apis.user.check({'transaction_id': transaction_id.value}) as any
+  // const detail = await Apis.user.check({'transaction_id': '742545834956033361'}) as any
+  if (detail.transaction_info.pay_status == 1) {
+    starPaymentPause()
+    showNotify({
+      message: 'Payment Successful',
+      color: '#FFFFFF',
+      background: '#000000',
+    })
+    user.value.integral_num = detail.user_integral_balance;
+  }
+}, { immediate: false, throttleWait: 900 })
+const { pause: starPaymentPause, resume: starPaymentResume } = useIntervalFn(() => {
+  paymentStatusExecute();
+}, 1000, { immediate: false })
+const { execute: clickButton } = useApiClient(async (item: any) => {
+  starPaymentPause();
+  if (!canClick.value) return;
+  canClick.value = false;
+  const detail = await Apis.user.doBuyIntegral({}, item.id) as any
+  invoicelink.value = detail.invoicelink;
+  transaction_id.value = detail.transaction_id;
+  onClickTelegramStarBoost()
+}, { immediate: false, throttleWait: 900 })
+
+const onClickTelegramStarBoost = throttle(() => {
+  if (invoicelink.value) {
+    TGClient.shareLink(invoicelink.value, false)
+    // resume
+    setTimeout(() => {
+      canClick.value = true;
+      starPaymentResume();
+    }, 2000)
+  }
+}, 1000)
+</script>
+
+<template>
+  <div class="main">
+    <img class="pay-bg" :src="NEW_IMAGES.PAY_BG" alt="">
+    <div class="pay-icon">
+      <img :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+    </div>
+    <div class="pay-title">
+      gift 积分
+    </div>
+    <div class="pay-desc">
+      Select the number of stars you want.
+    </div>
+    <div class="card-list">
+      <div  v-for="(item, index) in list" :key="index" class="card" v-on:click="()=>{clickButton(item)}">
+        <div class="card-star">
+          <img class="star-icon" :src="NEW_IMAGES.STAR_1">
+          <div class="star-text">
+            {{item.tg_star_amount}} star
+          </div>
+        </div>
+        <div class="card-coin">
+          <img class="coin-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
+          <div class="coin-text">
+            {{item.integral_amount}} star
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</template>
+
+<style lang="less" scoped>
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'OPPOSansBold';
+  position: relative;
+ .pay-bg {
+   position: absolute;
+   width: 100%;
+   left: 0;
+ }
+  .pay-icon {
+    display: flex;
+    margin-top: 52px;
+    align-items: center;
+    justify-content: center;
+    width: 76.715px;
+    height: 80.977px;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .pay-title {
+    margin-top: 16.8px;
+    color: #F2F2F2;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+  .pay-desc {
+    margin-top: 8px;
+    color: #F2F2F2;
+    text-align: center;
+    font-family: OPPOSans;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+  .card-list {
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+    padding: 0 15px;
+    gap: 8px;
+    width: 100%;
+    .card {
+      width: 100%;
+      height: 56px;
+      border-radius: 10px;
+      background: #1D1D20;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      .card-star {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        .star-icon {
+          height: 40px;
+        }
+        .star-text {
+          color: #FFF;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+        }
+      }
+      .card-coin {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        .coin-icon {
+          height: 33px;
+        }
+        .coin-text {
+          color: #FFF;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+        }
+      }
+    }
+  }
+}
+</style>

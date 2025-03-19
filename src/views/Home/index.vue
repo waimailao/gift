@@ -14,9 +14,9 @@ const nowList:any = ref(null)
 const { isFetching } = useApiClient(async () => {
   const list = await Apis.user.allRankList() as BackendResponseData
   listAll.value = list;
-  nowList.value = list[1].ranks;
+  nowList.value = list[4].ranks;
 })
-const navType = ref(1)
+const navType = ref(4)
 function changeType(type:number) {
   navType.value = type;
   nowList.value = listAll.value[type].ranks;
@@ -35,19 +35,19 @@ function changeType(type:number) {
       在这里您可以看到最幸运的玩家
     </div>
     <div class="home-nav">
-      <div v-on:click="()=>changeType(1)" class="home-nav-child" :class="{'active': navType == 1}">
+      <div v-on:click="()=>changeType(4)" class="home-nav-child" :class="{'active': navType == 4}">
         <div CLASS="home-nav-title">
           25
         </div>
         <img class="home-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
-      <div v-on:click="()=>changeType(2)" class="home-nav-child" :class="{'active': navType == 2}">
+      <div v-on:click="()=>changeType(5)" class="home-nav-child" :class="{'active': navType == 5}">
         <div CLASS="home-nav-title">
           50
         </div>
         <img class="home-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
-      <div v-on:click="()=>changeType(3)" class="home-nav-child" :class="{'active': navType == 3}">
+      <div v-on:click="()=>changeType(6)" class="home-nav-child" :class="{'active': navType == 6}">
         <div CLASS="home-nav-title">
           100
         </div>
@@ -141,7 +141,7 @@ function changeType(type:number) {
               {{item.user.nick_name}}
             </div>
             <div class="list-desc">
-              {{item.total_cost}}游戏们•{{item.total_award}}火花们•{{item.lottery_count}}头奖们
+              {{item.lottery_count}}游戏们•{{item.total_award}}火花们•{{item.limit_raward_count}}头奖们
             </div>
           </div>
           <div class="list-icon">
@@ -162,6 +162,7 @@ function changeType(type:number) {
   flex-direction: column;
   align-items: center;
   font-family: 'OPPOSansBold';
+  padding-bottom: 120px;
   .home-icon {
     display: flex;
     margin-top: 18px;

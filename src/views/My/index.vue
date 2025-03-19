@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-import {Skeleton, SkeletonAvatar } from 'vant'
+import {Skeleton, SkeletonAvatar,Popup } from 'vant'
 // utils
 import { NEW_IMAGES } from '@/assets'
 import { TG_ICON } from '@/constants/is'
+import PlayPopup from '@/components/PlayPopup.vue'
 // store
 import { useUserStoreRefs } from '@/store/modules/user'
 import {useApiClient} from "@/api/hooks/useClient";
@@ -11,13 +12,45 @@ import {Apis} from "@/api";
 import type { BackendResponseData } from 'axios'
 const { user } = useUserStoreRefs()
 const myList:any = ref(null)
-const { isFetching } = useApiClient(async () => {
+const allList:any = ref(null)
+const limitList:any = ref(null)
+const animation = ref('')
+const showPopup = ref(false)
+const animationId = ref(0)
+const price = ref(0)
+const { isFetching, execute: firstExecute  } = useApiClient(async () => {
   const list = await Apis.user.myGifts() as BackendResponseData
-  myList.value = list.data;
+  console.log(list);
+  myList.value = list.all_gifts.data;
+  allList.value = list.all_gifts.data;
+  limitList.value = list.limit_gifts.data;
 })
 const navType = ref(0)
 function changeType(type: number) {
   navType.value = type;
+  if (type) {
+    myList.value = limitList.value;
+  } else {
+    myList.value = allList.value;
+  }
+}
+const { execute: giftExecute } = useApiClient(async (id: number) => {
+  const detail = await Apis.user.giftAnimation(id) as any
+  if (detail) {
+    animation.value = detail.gift_animation;
+    showPopup.value = true;
+  }
+  console.log(detail)
+}, { immediate: false, throttleWait: 900 })
+function clickGift(item: any) {
+  console.log(item);
+  animationId.value = item.id;
+  price.value = item.award_star;
+  giftExecute(item.gift_tg_id);
+}
+function closePopup() {
+  showPopup.value = false;
+  firstExecute()
 }
 </script>
 
@@ -37,7 +70,7 @@ function changeType(type: number) {
     </div>
     <div class="my-desc">
       <div>
-        50
+        {{user.integral_num}}
       </div>
       <img :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
     </div>
@@ -57,27 +90,13 @@ function changeType(type: number) {
     </div>
     <Skeleton v-if="isFetching" class="card-list" loading>
       <template #template>
-        <div class="card">
-        </div>
-        <div class="card">
-        </div>
-        <div class="card">
-        </div>
-        <div class="card">
-        </div>
-        <div class="card">
-        </div>
-        <div class="card">
-        </div>
-        <div class="card">
-        </div>
-        <div class="card">
+        <div v-for="(item, index) in [0,1,2,3,4,5,6,7]" :index="index" :item="item" class="card">
         </div>
       </template>
     </Skeleton>
     <div v-else class="card-list">
-      <div  v-for="(item, index) in myList" :index="index" class="card">
-        <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(item.gifts.gift_tg_id))].icon" alt="">
+      <div v-for="(item, index) in myList" v-on:click="() => clickGift(item)" :index="index" class="card">
+        <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(item.gift_tg_id))].icon" alt="">
         <img class="card-icon-tag" v-if="item.gifts.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">
         <div class="card-button">
           <div>
@@ -87,6 +106,9 @@ function changeType(type: number) {
         </div>
       </div>
     </div>
+    <Popup v-model:show="showPopup" class="blue-popup" teleport="#app">
+      <PlayPopup :id="animationId" :price="price" :animation="animation" @handle-close="closePopup" />
+    </Popup>
   </div>
 </template>
 
@@ -96,6 +118,7 @@ function changeType(type: number) {
   flex-direction: column;
   align-items: center;
   font-family: 'OPPOSansBold';
+  padding-bottom: 120px;
   .my-icon {
     display: flex;
     margin-top: 18px;
@@ -225,5 +248,13 @@ function changeType(type: number) {
       }
     }
   }
+}
+.blue-popup {
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

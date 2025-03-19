@@ -31,6 +31,14 @@ const Routes = [
     },
   },
   {
+    path: '/Pay',
+    name: 'Pay',
+    component: () => import('@/views/Pay/index.vue'),
+    meta: {
+      title: 'Pay',
+    },
+  },
+  {
     path: '/:catchAll(.*)',
     redirect: '/',
   },

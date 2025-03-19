@@ -12,7 +12,7 @@ const router = useRouter()
     <div class="launch-content">
       <slot />
     </div>
-    <div class="bottom-nav">
+    <div v-if="route.name != 'Pay'" class="bottom-nav">
       <div v-on:click="() => router.push({ name: 'Home' })" class="nav" :class="{'selected': route.name == 'Home'}">
         <div class="nav-img">
           <svg xmlns="http://www.w3.org/2000/svg" width="26" height="27" viewBox="0 0 26 27" fill="none">

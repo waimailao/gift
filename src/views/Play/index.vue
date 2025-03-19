@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import { throttle } from 'lodash-es'
-import {Skeleton} from 'vant'
+import {showConfirmDialog,showDialog, Skeleton} from 'vant'
 
 import { Popup } from 'vant'
 import { TG_ICON } from '@/constants/is'
-import PlayPopup from './components/PlayPopup/index.vue'
+import PlayPopup from '@/components/PlayPopup.vue'
 import { useIntervalFn } from '@vueuse/core'
 
 // utils
@@ -15,7 +15,10 @@ import type { BackendResponseData } from 'axios'
 import {Apis} from "@/api";
 import {TGClient} from "@/services/telegram";
 import {sleep} from "@/utils";
-
+import {useUserStoreRefs} from "@/store/modules/user";
+import {useRouter} from "vue-router";
+const { user } = useUserStoreRefs()
+const router = useRouter()
 const cardList = ref<HTMLElement | null>(null)
 const playBox = ref<HTMLElement | null>(null)
 const listAll:any = ref(null)
@@ -23,6 +26,8 @@ const showPopup = ref(false)
 const listMain:any = ref(null)
 const list25 = ref(null)
 const animation = ref('')
+const animationId = ref(0)
+const price = ref(0)
 const invoicelink = ref('')
 const transaction_id = ref(0)
 const list50 = ref(null)
@@ -37,16 +42,16 @@ const { isFetching } = useApiClient(async () => {
   list50.value = list[1].gifts.concat(list[1].gifts).concat(list[1].gifts)
   list100.value = list[2].gifts.concat(list[2].gifts).concat(list[2].gifts)
 })
-const navType = ref(1)
+const navType = ref(4)
 function changeType(type: number) {
   navType.value = type;
-  if (type == 1) {
+  if (type == 4) {
     listMain.value = list25.value
   }
-  if (type == 2) {
+  if (type == 5) {
     listMain.value = list50.value
   }
-  if (type == 3) {
+  if (type == 6) {
     listMain.value = list100.value
   }
   listMain.value = listMain.value.sort(() => Math.random() - 0.5);
@@ -56,20 +61,57 @@ function changeType(type: number) {
 const { execute: paymentStatusExecute } = useApiClient(async () => {
   const detail = await Apis.user.check({'transaction_id': transaction_id.value}) as any
   // const detail = await Apis.user.check({'transaction_id': '742545834956033361'}) as any
-  if (detail.pay_status == 1 && detail.award_status == 1) {
-    listMain.value[21].star_price = detail.gifts.star_price;
-    listMain.value[21].gift_tg_id = detail.gifts.gift_tg_id;
-    listMain.value[21].is_limit = detail.gifts.is_limit;
-    animation.value = detail.gifts.gift_animation;
+  console.log(detail.transaction_info,detail.transaction_info.pay_status)
+  if (detail.transaction_info.pay_status == 1) {
     starPaymentPause()
-    playGame()
+    await doLottery();
   }
 }, { immediate: false, throttleWait: 900 })
 
-const { execute: clickButton } = useApiClient(async () => {
+// Handle Wallet Unbinding
+async function handleWalletUnbinding(action: string): Promise<any> {
+  if (action === 'cancel') {
+    return Promise.resolve(true)
+  }
+  canClick.value = false;
+  await doLottery();
+  return Promise.resolve(true)
+}
+
+function clickButton() {
   if (!canClick.value) return;
+  showConfirmDialog({
+    title: '以' + (navType.value == 6 ? 100 : (navType.value == 5 ? 50 : 25)) + '火花们进行游戏？',
+    confirmButtonText: '是',
+    cancelButtonText: '否',
+    showCancelButton: true,
+    confirmButtonColor: 'black',
+    beforeClose: handleWalletUnbinding,
+  })
+}
+
+const { execute: doLottery } = useApiClient(async ()  => {
   canClick.value = false;
   const detail = await Apis.user.doLottery({}, navType.value) as any
+  console.log(detail);
+  if (detail.raward_type == 1) {
+    changePlayList(detail.integral);
+    return;
+  }
+  if (detail.raward_type == 2) {
+    console.log(detail);
+    listMain.value[21].star_price = detail.gifts.star_price;
+    listMain.value[21].gift_tg_id = detail.gifts.gift_tg_id;
+    listMain.value[21].is_limit = detail.gifts.is_limit;
+    listMain.value[21].id = detail.gifts.id;
+    animation.value = detail.gifts.gift_animation;
+    animationId.value = detail.gifts.lottery_id;
+    price.value = detail.gifts.star_price;
+
+    starPaymentPause()
+    playGame()
+    return;
+  }
   invoicelink.value = detail.invoicelink;
   transaction_id.value = detail.transaction_id;
 
@@ -86,26 +128,78 @@ const onClickTelegramStarBoost = throttle(() => {
     TGClient.shareLink(invoicelink.value, false)
     // resume
     setTimeout(() => {
+      canClick.value = true;
       starPaymentResume();
     }, 2000)
   }
 }, 1000)
 
-function playGame() {
+function playGame(integral:number = 0) {
+  console.log(1)
+  canClick.value = false;
   const transformLength = (playBox.value!.clientWidth - 48) / 3 * 20 + 8 * 18
   cardList.value!.children[2].classList.remove('hover')
   if (cardList.value) {
     cardList.value!.style.transition = `transform 4s cubic-bezier(0.35, 0.08, 0.26, 0.93) 0s`;
     cardList.value!.style.transform = 'translateX(-' + transformLength + 'px)';
-    openPopup();
+    openPopup(integral);
   }
 }
-async function openPopup() {
+async function openPopup(integral:number = 0) {
   await sleep(3850)
   cardList.value!.children[21].classList.add('hover')
   await sleep(250)
-  showPopup.value = true;
+  if (integral) {
+    showDialog({
+      title: '恭喜您获得'+ integral +'积分',
+    })
+    changeType(navType.value);
+    closePopup()
+  } else {
+    showPopup.value = true;
+  }
   canClick.value = true;
+}
+
+function changePlayList(integral: number) {
+  listMain.value = listMain.value.concat(
+    [
+      {
+        'star_price': 5,
+        'gift_tg_id': 1,
+        'is_limit': 0,
+      },
+      {
+        'star_price': 6,
+        'gift_tg_id': 1,
+        'is_limit': 0,
+      },
+      {
+        'star_price': 7,
+        'gift_tg_id': 1,
+        'is_limit': 0,
+      },
+      {
+        'star_price': 8,
+        'gift_tg_id': 1,
+        'is_limit': 0,
+      },
+      {
+        'star_price': 9,
+        'gift_tg_id': 1,
+        'is_limit': 0,
+      },
+      {
+        'star_price': 10,
+        'gift_tg_id': 1,
+        'is_limit': 0,
+      },
+    ]
+  ).sort(() => Math.random() - 0.5);
+  listMain.value[21].star_price = integral;
+  listMain.value[21].gift_tg_id = 1;
+  listMain.value[21].is_limit = 0;
+  playGame(integral);
 }
 
 function closePopup() {
@@ -121,8 +215,17 @@ function closePopup() {
 
 <template>
   <div class="main">
-    <div class="play-title">
-      您可以100%获得奖品
+    <div class="play-head">
+      <div class="left">
+        您可以100%获得奖品
+      </div>
+      <div class="right">
+        <div v-on:click="() => router.push({ name: 'Pay' })" class="right-add">+</div>
+        <div class="right-amount">
+          <div>{{user.integral_num}}</div>
+          <img class="right-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+        </div>
+      </div>
     </div>
     <Skeleton v-if="isFetching" class="card-list" loading>
       <template #template>
@@ -158,19 +261,19 @@ function closePopup() {
       参与游戏
     </div>
     <div class="play-nav">
-      <div v-on:click="()=>changeType(1)" class="play-nav-child" :class="{'active': navType == 1}">
+      <div v-on:click="()=>changeType(4)" class="play-nav-child" :class="{'active': navType == 4}">
         <div CLASS="play-nav-title">
           25
         </div>
         <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
-      <div v-on:click="()=>changeType(2)" class="play-nav-child" :class="{'active': navType == 2}">
+      <div v-on:click="()=>changeType(5)" class="play-nav-child" :class="{'active': navType == 5}">
         <div CLASS="play-nav-title">
           50
         </div>
         <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
-      <div v-on:click="()=>changeType(3)" class="play-nav-child" :class="{'active': navType == 3}">
+      <div v-on:click="()=>changeType(6)" class="play-nav-child" :class="{'active': navType == 6}">
         <div CLASS="play-nav-title">
           100
         </div>
@@ -228,7 +331,7 @@ function closePopup() {
       </div>
     </div>
     <Popup v-model:show="showPopup" class="blue-popup" teleport="#app">
-      <PlayPopup :animation="animation" @handle-close="closePopup" />
+      <PlayPopup :id="animationId" :price="price" :animation="animation" @handle-close="closePopup" />
     </Popup>
   </div>
 </template>
@@ -241,6 +344,56 @@ function closePopup() {
   font-family: 'OPPOSansBold';
   min-height: 100%;
   padding-bottom: 120px;
+
+  .play-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    margin-top: 20px;
+    width: 100%;
+    .left {
+      color: #FFF;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+    .right {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 14px;
+      min-width: 70.403px;
+      height: 20.241px;
+      background: #1C1C1E;
+      color: #CF8A37;
+      font-family: "DINAlternate";
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+      padding: 0 6px;
+      gap: 8px;
+      .right-icon {
+        width: 12.242px;
+        height: 13.14px;
+      }
+      .right-add {
+        width: 18px;
+        height: 18px;
+        border: 1px solid #CF8A37;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        line-height: 14px;
+      }
+      .right-amount {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+    }
+  }
   .play-title {
     display: flex;
     justify-content: left;

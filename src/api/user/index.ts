@@ -28,6 +28,9 @@ function account() {
 function myGifts() {
   return get('/api/v1/myGifts')
 }
+function strIntegralList() {
+  return get('/api/v1/strIntegralList')
+}
 function allRankList() {
   return get('/api/v1/allRankList')
 }
@@ -35,12 +38,29 @@ function allRankList() {
 function leave(data: any = null) {
   return post('/user/offline', data)
 }
+function giftToGift(data: any = null, id:any = 0) {
+  return post('/api/v1/giftToGift/'+id, data)
+}
+function giftToIntegral(data: any = null,id:any = 0) {
+  return post('/api/v1/giftToIntegral/'+id, data)
+}
+function doBuyIntegral(data: any = null, type_id:number = 1) {
+  return post('/api/v1/doBuyIntegral/'+type_id, data)
+}
 
 function detail() {
   return get('/user/myDetail')
 }
+function giftAnimation(id:any = 0) {
+  return get('/api/v1/giftAnimation/'+ id)
+}
 
 export default {
+  giftToIntegral,
+  giftAnimation,
+  giftToGift,
+  doBuyIntegral,
+  strIntegralList,
   info,
   login,
   leave,
