@@ -75,7 +75,12 @@ const onClickTelegramStarBoost = throttle(() => {
     <div class="card-list">
       <div  v-for="(item, index) in list" :key="index" class="card" v-on:click="()=>{clickButton(item)}">
         <div class="card-star">
-          <img class="star-icon" :src="NEW_IMAGES.STAR_1">
+          <img v-if="index == 0" class="star-icon" :src="NEW_IMAGES.STAR_1">
+          <img v-if="index == 1" class="star-icon" :src="NEW_IMAGES.STAR_2">
+          <img v-if="index == 2" class="star-icon" :src="NEW_IMAGES.STAR_3">
+          <img v-if="index == 3" class="star-icon" :src="NEW_IMAGES.STAR_4">
+          <img v-if="index == 4" class="star-icon" :src="NEW_IMAGES.STAR_5">
+          <img v-if="index == 5" class="star-icon" :src="NEW_IMAGES.STAR_6">
           <div class="star-text">
             {{item.tg_star_amount}} star
           </div>

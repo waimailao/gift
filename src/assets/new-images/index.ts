@@ -28,8 +28,18 @@ import GIFT_5170690322832818290 from './5170690322832818290.png'
 import GIFT_5960747083030856414 from './5960747083030856414.png'
 import PAY_BG from './pay-bg.png'
 import STAR_1 from './star_1.png'
+import STAR_2 from './star_2.png'
+import STAR_3 from './star_3.png'
+import STAR_4 from './star_4.png'
+import STAR_5 from './star_5.png'
+import STAR_6 from './star_6.png'
 export const NEW_IMAGES = {
   STAR_1,
+  STAR_2,
+  STAR_3,
+  STAR_4,
+  STAR_5,
+  STAR_6,
   PAY_BG,
   GIFT_5782984811920491178,
   GIFT_5963238670868677492,
