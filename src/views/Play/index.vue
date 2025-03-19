@@ -251,10 +251,10 @@ function closePopup() {
         <div class="card-content" :class="[{'animation1': navType == 4},{'animation2': navType == 5},{'animation3': navType == 6}]">
           <div v-for="(item, i) in listTop" :key="i" class="card">
             <div class="card-chance">
-              {{Math.floor(item.probability * 100) + '%'}}
+              {{item.probability + '%'}}
             </div>
             <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(item.gift_tg_id))].icon" alt="">
-            <!--        <img class="card-icon-tag" v-if="item.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">-->
+                    <img class="card-icon-tag" v-if="item.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">
             <div class="card-button">
               <div>
                 {{item.star_price}}
@@ -441,17 +441,17 @@ function closePopup() {
         animation-play-state: running;
         &.animation1 {
           animation-name: card-beat1;
-          animation-duration: 6.4s;
+          animation-duration: 8s;
 
         }
         &.animation2 {
           animation-name: card-beat2;
-          animation-duration: 8s;
+          animation-duration: 10s;
 
         }
         &.animation3 {
           animation-name: card-beat3;
-          animation-duration: 8s;
+          animation-duration: 10s;
 
         }
       }
@@ -490,8 +490,8 @@ function closePopup() {
         margin-top: 7px;
       }
       .card-icon-tag {
-        width: 34px;
-        height: 34px;
+        width: 24px;
+        height: 24px;
         position: absolute;
         right: 0;
         top: 0;
