@@ -7,7 +7,7 @@ import { useUserStoreRefs } from '@/store/modules/user'
 // router
 const Routes = [
   {
-    path: '/',
+    path: '/Rank',
     name: 'Home',
     component: () => import('@/views/Home/index.vue'),
     meta: {
@@ -15,7 +15,7 @@ const Routes = [
     },
   },
   {
-    path: '/Play',
+    path: '/',
     name: 'Play',
     component: () => import('@/views/Play/index.vue'),
     meta: {

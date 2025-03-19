@@ -83,7 +83,7 @@ const router = useRouter()
     background: #010101;
   }
   .bottom-nav {
-    height: 100px;
+    height: 72px;
     width: 100%;
     position: fixed;
     background: #010101;
@@ -123,7 +123,6 @@ const router = useRouter()
           fill: #3290EC;
         }
       }
-
     }
   }
 }

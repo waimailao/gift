@@ -21,6 +21,7 @@ const { user } = useUserStoreRefs()
 const router = useRouter()
 const cardList = ref<HTMLElement | null>(null)
 const playBox = ref<HTMLElement | null>(null)
+const listTop:any = ref(null)
 const listAll:any = ref(null)
 const showPopup = ref(false)
 const listMain:any = ref(null)
@@ -35,8 +36,8 @@ const list100 = ref(null)
 const canClick = ref(true)
 const { isFetching } = useApiClient(async () => {
   const list = await Apis.user.gifts() as BackendResponseData
-  const listTop = await Apis.user.topGifts() as BackendResponseData
-  listAll.value = listTop.slice(0,5)
+  listTop.value = list[0].gifts;
+  listAll.value = list
   listMain.value = list[0].gifts.concat(list[0].gifts).concat(list[0].gifts).sort(() => Math.random() - 0.5);
   list25.value = list[0].gifts.concat(list[0].gifts).concat(list[0].gifts);
   list50.value = list[1].gifts.concat(list[1].gifts).concat(list[1].gifts)
@@ -47,12 +48,15 @@ function changeType(type: number) {
   navType.value = type;
   if (type == 4) {
     listMain.value = list25.value
+    listTop.value = listAll.value[0].gifts;
   }
   if (type == 5) {
     listMain.value = list50.value
+    listTop.value = listAll.value[1].gifts;
   }
   if (type == 6) {
     listMain.value = list100.value
+    listTop.value = listAll.value[2].gifts;
   }
   listMain.value = listMain.value.sort(() => Math.random() - 0.5);
 }
@@ -243,18 +247,23 @@ function closePopup() {
     </Skeleton>
 
     <div v-else class="card-list">
-      <div v-for="(item, i) in listAll" :key="i" class="card">
-        <div class="card-chance">
-          {{Math.floor(item.probability * 100) + '%'}}
-        </div>
-        <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(item.gift_tg_id))].icon" alt="">
-<!--        <img class="card-icon-tag" v-if="item.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">-->
-        <div class="card-button">
-          <div>
-            {{item.star_price}}
+      <div class="card-box">
+        <div class="card-content" :class="[{'animation1': navType == 4},{'animation2': navType == 5},{'animation3': navType == 6}]">
+          <div v-for="(item, i) in listTop" :key="i" class="card">
+            <div class="card-chance">
+              {{Math.floor(item.probability * 100) + '%'}}
+            </div>
+            <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(item.gift_tg_id))].icon" alt="">
+            <!--        <img class="card-icon-tag" v-if="item.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">-->
+            <div class="card-button">
+              <div>
+                {{item.star_price}}
+              </div>
+              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+            </div>
           </div>
-          <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
         </div>
+
       </div>
     </div>
     <div class="play-title second">
@@ -412,10 +421,42 @@ function closePopup() {
 
   .card-list {
     display: flex;
-    flex-wrap:wrap;
     width: 100%;
     padding: 12px 24px;
     gap: 4.5px;
+    .card-box {
+      width: 100%;
+      overflow-x: hidden;
+      .card-content {
+        display: flex;
+        gap: 4.5px;
+        /*动画名称*/
+        /*设置秒数*/
+        animation-timing-function: linear;
+        /*速度曲线*/
+        animation-iteration-count: infinite;
+        /*播放次数*/
+        animation-direction: alternate;
+        /*逆向播放*/
+        animation-play-state: running;
+        &.animation1 {
+          animation-name: card-beat1;
+          animation-duration: 6.4s;
+
+        }
+        &.animation2 {
+          animation-name: card-beat2;
+          animation-duration: 8s;
+
+        }
+        &.animation3 {
+          animation-name: card-beat3;
+          animation-duration: 8s;
+
+        }
+      }
+    }
+
     .card {
       width: calc((100% - 18px)/5);
       height: 91px;
@@ -673,6 +714,33 @@ function closePopup() {
 
   100% {
     width: 11px;
+  }
+}
+@keyframes card-beat1 {
+  0% {
+    transform: translateX(0px);
+  }
+
+  100% {
+    transform: translateX(-160%);
+  }
+}
+@keyframes card-beat2 {
+  0% {
+    transform: translateX(0px);
+  }
+
+  100% {
+    transform: translateX(-220%);
+  }
+}
+@keyframes card-beat3 {
+  0% {
+    transform: translateX(0px);
+  }
+
+  100% {
+    transform: translateX(-220%);
   }
 }
 @keyframes beat {

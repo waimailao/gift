@@ -68,12 +68,15 @@ onMounted(async () => {
   <img class="popup-bg" :src="NEW_IMAGES.POPUP_BG" alt="">
   <div class="popup-content">
     <div class="popop-zhan" />
-    <div>
-      <div class="popup-title">
-        恭喜你获得
-      </div>
+    <div class="popop-center">
 <!--            <img id="lottie-div" class="popup-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">-->
       <div ref="lottieDiv" id="lottie-div" class="popup-icon"  />
+      <div class="popup-title">
+        You won a gift
+      </div>
+      <div class="popup-desc">
+        What do you want to do with him?
+      </div>
     </div>
     <div>
       <div class="popup-button-top">
@@ -106,7 +109,11 @@ onMounted(async () => {
     padding: 30px 0;
   }
   .popop-zhan {
-    height: 110px;
+  }
+  .popop-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .popup-bg {
     position: absolute;
@@ -114,18 +121,25 @@ onMounted(async () => {
     left: 0;
     top: 50%;
     width: 100%;
-    transform: translateY(calc(-50% - -26px));
+    transform: translateY(calc(-75%));
   }
   .popup-title {
     color: #F2F2F2;
-    text-align: justify;
-    font-size: 26px;
+    font-size: 20px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    margin-top: 20px;
+  }
+  .popup-desc {
+    margin-top: 6px;
+    color: #F2F2F2;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
   }
   .popup-icon {
-    margin-top: 20px;
     width: 149px;
   }
   .popup-button-top {
