@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, nextTick,toRefs} from 'vue'
+import {ref, onMounted, nextTick, toRefs, watch} from 'vue'
 import lottie from 'lottie-web'
 import { NEW_IMAGES } from '@/assets'
 import {useApiClient} from "@/api/hooks/useClient";
@@ -46,6 +46,19 @@ const { execute: giftToType } = useApiClient(async (type:boolean): Promise<any> 
     }
   }
 }, { immediate: false, throttleWait: 900 })
+watch(animation, (value) => {
+  console.log(value);
+  if (lottieDiv.value) {
+    const animations = lottie.loadAnimation({
+      container: lottieDiv.value, // the dom element that will contain the animation
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      animationData: JSON.parse(animation.value)
+    });
+    animations.play();
+  }
+})
 onMounted(async () => {
   await nextTick()
   if (lottieDiv.value) {
