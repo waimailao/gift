@@ -11,8 +11,10 @@ import {Apis} from "@/api";
 import {throttle} from "lodash-es";
 import {TGClient} from "@/services/telegram";
 import {useUserStoreRefs} from "@/store/modules/user";
+import {useRouter} from "vue-router";
 // import {TGClient} from "@/services/telegram";
 const { user } = useUserStoreRefs()
+const router = useRouter()
 const list:any = ref(null)
 const canClick = ref(true)
 const invoicelink = ref('')
@@ -58,10 +60,14 @@ const onClickTelegramStarBoost = throttle(() => {
     }, 2000)
   }
 }, 1000)
+
 </script>
 
 <template>
   <div class="main">
+    <div v-on:click="() => router.push({ name: 'Play' })" class="back-btn">
+      <img class="back-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAQlSURBVHgB7ZxPUhNREMa/l2jBkiNwBLhBAKlypzkB4QTiQgrcABtBXAAnAE8A7qhCQjwBHIEjsESt5Nk9GAUlmX7JzCS8+X6bSYWuItXf/Hn9Tb8GCCGEEEIIIYQQQgghhBASOw5jSG3N16rAhn6UX3jjPU46wFZrx10jMsZOgIV1vwSPo3+/98B15xazrX13g4ioYIxYWPWvH0u+ImfKdGUSK4iMsRFg8b2fQRWH/WKcxwwiYywEkHv+dLuDYzn7p/rFedf/70+RkQugyZcfcaG3mNTgDk4QGSMVICj5+hD+8fjz4SkzMgFqK34qJPnPgbnYVkDKM4wATX51AhcISP5phDWAMpIroDqJPVlXpq9opAirVFCPNflK4QLMr/s9OTQssRWHubMP7goRU6gAL9b8hqzlTcWUVL7LsSdfKUwATb4kddMSK3FbzR13hBJQiBc0QPJNsTGQuwC9zLXHKFvylVwFUH+n08GlJVYs54PmRxed2ZZGbgIkyfey1vcG/8bh5Hzb1VFCcinEuuaaqJuefI+r9i2WUVIyvwJC/Z12hC9ZQsh0GRqa/Fj9nRAyEyDxd3xy25k2hEft74SQmQCJuWb0d5j8v2QiwMKaPzSba47Jv8/Qq6DfVW7DFNwWf2c3fn8nhKEECLQYlpu7LrpXisMy8C2I5lo2DFQHiKe/IrbyniW2jP5OCMEC0FzLliABgvydMuJx0nZ4G9LDahZAq9yqE2eTye+Px42IMGsVwfwQFqX2mXwDDlNV9G+xvI9ZAAl8BWIjoIfVvgyVKhbERkAPq10A8e1BbHh8sYaaBRADbZlXgQE1G519H4NZADXQ1EijCD3QrVTAt+ces6d5LEO7zK/5hjM+5dWqkEJsC6QnwV6Qejpeig1LrAi1KYJtgPRkIDOuue32JbmmM5si9Geol/LiiG76u+2klv/UON92n0EeMHRXhLwN25fDG1NwB/VzvhN4QCZtKSLCkRyWUgPFJ6l0MHf2iW/FumTWFyQ29aWpBA80q2Ins66I9kRSI6Sf2VKma++Quqsg2XbGvZSk/oRt71cyekAbs0p+JWTemhgsAlsTs0XLcG28ko/XabHaRacNXdpVh5KSyxalxDeqoG7yjRxmkl2TJSXXDRpSqNX83e3IwtH5jitdm3qum/S+7riWNmQZwxtltCxy3yVJ864/hWxTDTbvVn1p9ooVsk21C827/ylUAMXsG0GbqZNCrYWIKXxWhKx0GnIwndm642bxnY9uTNl9RjItpa3D94y+UbuK45h9o8JvQV1qm36q+j3pM009w2P2jUYmgELfaMQz40J9I84NzYE/Ihh8I84NzQlr0xfnhuaITseSM7z/wA7ODc2XFPOOc0OLINlN6VDXPsvki7vx9QdlH+pBCCGEEEIIIYQQQgghhJCnyy8RxJsbwcYF0QAAAABJRU5ErkJggg==">
+    </div>
     <img class="pay-bg" :src="NEW_IMAGES.PAY_BG" alt="">
     <div class="pay-icon">
       <img :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
@@ -104,6 +110,18 @@ const onClickTelegramStarBoost = throttle(() => {
   align-items: center;
   font-family: 'OPPOSansBold';
   position: relative;
+  .back-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 16px;
+    width: 30px;
+    height: 30px;
+    background: #2c2c30;
+    cursor: pointer;
+    img {
+      width: 100%;
+    }
+  }
  .pay-bg {
    position: absolute;
    width: 100%;

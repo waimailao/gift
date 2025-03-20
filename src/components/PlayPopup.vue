@@ -20,6 +20,7 @@ const { user } = useUserStoreRefs()
 const { animation,id } = toRefs(props)
 const emits = defineEmits(['handleClose'])
 const lottieDiv = ref<HTMLElement | null>(null)
+const animationDiv:any = ref(null)
 const { execute: giftToType } = useApiClient(async (type:boolean): Promise<any>  => {
   if (type) {
     const detail = await Apis.user.giftToIntegral({}, id.value) as any
@@ -27,6 +28,7 @@ const { execute: giftToType } = useApiClient(async (type:boolean): Promise<any> 
     if (detail && detail.gift_tg_id && detail.integral_num) {
         user.value.integral_num = user.value.integral_num + detail.integral_num;
         emits('handleClose');
+      animationDiv.value.destroy();
       showNotify({
         message: 'Successful',
         color: '#FFFFFF',
@@ -38,6 +40,7 @@ const { execute: giftToType } = useApiClient(async (type:boolean): Promise<any> 
     console.log(false, detail);
     if (detail && detail.gift_tg_id && detail.integral_num) {
         emits('handleClose');
+      animationDiv.value.destroy();
       showNotify({
         message: 'Successful',
         color: '#FFFFFF',
@@ -49,29 +52,34 @@ const { execute: giftToType } = useApiClient(async (type:boolean): Promise<any> 
 watch(animation, (value) => {
   console.log(value);
   if (lottieDiv.value) {
-    const animations = lottie.loadAnimation({
+    animationDiv.value = lottie.loadAnimation({
       container: lottieDiv.value, // the dom element that will contain the animation
       renderer: 'svg',
       loop: true,
       autoplay: true,
       animationData: JSON.parse(animation.value)
     });
-    animations.play();
+    animationDiv.value.play();
   }
 })
 onMounted(async () => {
   await nextTick()
   if (lottieDiv.value) {
-    const animations = lottie.loadAnimation({
+    animationDiv.value = lottie.loadAnimation({
       container: lottieDiv.value, // the dom element that will contain the animation
       renderer: 'svg',
       loop: true,
       autoplay: true,
       animationData: JSON.parse(animation.value)
     });
-    animations.play();
+    animationDiv.value.play();
   }
 })
+
+function closePopup(){
+  emits('handleClose');
+  animationDiv.value.destroy();
+}
 
 
 </script>
@@ -100,7 +108,7 @@ onMounted(async () => {
           Sell it for {{price}}
         </div>
       </div>
-      <div  v-on:click="() => $emit('handleClose')" class="popup-button bottom-button">
+      <div  v-on:click="() => closePopup()" class="popup-button bottom-button">
         Keep in App
       </div>
     </div>
