@@ -107,6 +107,7 @@ const router = useRouter()
         font-style: normal;
         font-weight: 400;
         line-height: normal;
+        cursor: pointer;
       }
       .nav-img {
         svg {

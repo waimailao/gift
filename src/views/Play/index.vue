@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {nextTick, onMounted, ref,watch} from 'vue'
 import { throttle } from 'lodash-es'
 import {showConfirmDialog,showDialog, Skeleton} from 'vant'
 
@@ -34,6 +34,7 @@ const transaction_id = ref(0)
 const list50 = ref(null)
 const list100 = ref(null)
 const canClick = ref(true)
+const showFirst = ref(false)
 const { isFetching } = useApiClient(async () => {
   const list = await Apis.user.gifts() as BackendResponseData
   listTop.value = list[0].gifts;
@@ -85,7 +86,7 @@ async function handleWalletUnbinding(action: string): Promise<any> {
 function clickButton() {
   if (!canClick.value) return;
   showConfirmDialog({
-    title: '以' + (navType.value == 6 ? 100 : (navType.value == 5 ? 50 : 25)) + '火花们进行游戏？',
+    title: '以' + (navType.value == 6 ? 100 : (navType.value == 5 ? 50 : 25)) + '积分进行游戏？',
     confirmButtonText: '是',
     cancelButtonText: '否',
     showCancelButton: true,
@@ -111,7 +112,8 @@ const { execute: doLottery } = useApiClient(async ()  => {
     animation.value = detail.gifts.gift_animation;
     animationId.value = detail.gifts.lottery_id;
     price.value = detail.gifts.star_price;
-
+    const integral_num = navType.value == 6 ? 100 : (navType.value == 5 ? 50 : 25);
+    user.value.integral_num = user.value.integral_num - integral_num;
     starPaymentPause()
     playGame()
     return;
@@ -214,7 +216,29 @@ function closePopup() {
   cardList.value!.children[2].classList.add('hover')
   showPopup.value = false;
 }
-
+function closeFirstPopup() {
+  console.log(1111)
+  showFirst.value = false;
+  user.value.first_lottery = 0;
+}
+async function clickFirstPopup() {
+  user.value.first_lottery = 0;
+  showFirst.value = false;
+  await doLottery();
+}
+watch(user, (value) => {
+  console.log(value);
+  if (user.value.first_lottery) {
+    showFirst.value = true;
+  }
+})
+onMounted(async () => {
+  await nextTick()
+  console.log(user.value.first_lottery)
+  if (user.value.first_lottery) {
+    showFirst.value = true;
+  }
+})
 </script>
 
 <template>
@@ -341,6 +365,22 @@ function closePopup() {
     </div>
     <Popup v-model:show="showPopup" class="blue-popup" teleport="#app">
       <PlayPopup :id="animationId" :price="price" :animation="animation" @handle-close="closePopup" />
+    </Popup>
+    <Popup v-model:show="showFirst" class="first-popup" position="center" teleport="#app">
+      <div class="first-content">
+        <img class="first-icon" :src="NEW_IMAGES.FIRST_ICON" alt="">
+        <div class="first-title">
+          恭喜你获得 <span>1</span> 次免费抽奖
+        </div>
+        <div class="first-button">
+          <div v-on:click="() => closeFirstPopup()" class="first-button-child">
+            先看看
+          </div>
+          <div  v-on:click="() => clickFirstPopup()" class="first-button-child">
+            免费抽奖
+          </div>
+        </div>
+      </div>
     </Popup>
   </div>
 </template>
@@ -486,7 +526,6 @@ function closePopup() {
       }
       .card-icon {
         width: 40px;
-        height: 40px;
         margin-top: 7px;
       }
       .card-icon-tag {
@@ -536,6 +575,7 @@ function closePopup() {
       border-radius: 8px;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
       .play-nav-title {
         color: #FFF;
         text-align: justify;
@@ -589,7 +629,6 @@ function closePopup() {
         }
         .card-icon {
           width: 45px;
-          height: 50px;
         }
         .card-icon-tag {
           width: 43px;
@@ -705,7 +744,57 @@ function closePopup() {
   display: flex;
   justify-content: center;
   align-items: center;
-
+}
+.first-popup {
+  background: transparent;
+  width: calc(100% - 110px);
+  height: 177px;
+  margin-left: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .first-content {
+    width: 100%;
+    height: 100%;
+    border-radius: 13.5px;
+    background: #FFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .first-icon {
+      margin-top: 14.5px;
+      width: 61px;
+      height: 61px;
+    }
+    .first-title {
+      margin-top: 17px;
+      color: #010105;
+      text-align: justify;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      span {
+        color: #49A3ED;
+      }
+    }
+    .first-button {
+      margin-top: 30px;
+      display: flex;
+      width: 100%;
+      padding: 0 55px;
+      justify-content: space-between;
+      color: #3382FB;
+      text-align: justify;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      .first-button-child {
+        cursor: pointer;
+      }
+    }
+  }
 }
 @keyframes round-beat {
   0% {

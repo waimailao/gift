@@ -66,7 +66,7 @@ function closePopup() {
     </div>
 
     <div class="my-title">
-      排行榜
+      {{user.username || `${user.firstName} ${user.lastName}`}}
     </div>
     <div class="my-desc">
       <div>
@@ -170,6 +170,7 @@ function closePopup() {
       align-items: center;
       width: 50%;
       gap: 10px;
+      cursor: pointer;
       .my-nav-title {
         color: #E8EDF3;
         text-align: justify;
@@ -215,7 +216,6 @@ function closePopup() {
       padding: 14px 0;
       .card-icon {
         width: 45px;
-        height: 50px;
       }
       .card-icon-tag {
         width: 34px;

@@ -208,6 +208,7 @@ function changeType(type:number) {
       border-radius: 8px;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
       .home-nav-title {
         color: #FFF;
         text-align: justify;

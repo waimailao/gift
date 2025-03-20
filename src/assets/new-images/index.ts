@@ -33,7 +33,9 @@ import STAR_3 from './star_3.png'
 import STAR_4 from './star_4.png'
 import STAR_5 from './star_5.png'
 import STAR_6 from './star_6.png'
+import FIRST_ICON from './first_icon.png'
 export const NEW_IMAGES = {
+  FIRST_ICON,
   STAR_1,
   STAR_2,
   STAR_3,
