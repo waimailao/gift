@@ -1,12 +1,12 @@
 <script setup lang="ts">
 // utils
 import { isiOS } from '@/constants/is'
-import { useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+// import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+// const { t } = useI18n()
 const route = useRoute()
-const router = useRouter()
+// const router = useRouter()
 </script>
 
 <template>
