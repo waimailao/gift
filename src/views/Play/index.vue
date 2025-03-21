@@ -72,7 +72,7 @@ const { execute: paymentStatusExecute } = useApiClient(async () => {
   console.log(detail.transaction_info,detail.transaction_info.pay_status)
   if (detail.transaction_info.pay_status == 1) {
     starPaymentPause()
-    await doLottery();
+    await doLottery(true);
   }
 }, { immediate: false, throttleWait: 900 })
 
@@ -98,7 +98,7 @@ function clickButton() {
   })
 }
 
-const { execute: doLottery } = useApiClient(async ()  => {
+const { execute: doLottery } = useApiClient(async (flag:boolean = false)  => {
   canClick.value = false;
   const detail = await Apis.user.doLottery({}, navType.value) as any
   console.log(detail);
@@ -116,7 +116,9 @@ const { execute: doLottery } = useApiClient(async ()  => {
     animationId.value = detail.gifts.lottery_id;
     price.value = detail.gifts.star_price;
     const integral_num = navType.value == 6 ? 100 : (navType.value == 5 ? 50 : 25);
-    user.value.integral_num = user.value.integral_num - integral_num;
+    if (!flag) {
+      user.value.integral_num = user.value.integral_num - integral_num;
+    }
     starPaymentPause()
     playGame()
     return;

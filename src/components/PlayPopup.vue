@@ -5,7 +5,7 @@ import { NEW_IMAGES } from '@/assets'
 import {useApiClient} from "@/api/hooks/useClient";
 import {Apis} from "@/api";
 import {useUserStoreRefs} from "@/store/modules/user";
-import {showNotify} from "vant";
+import {showDialog, showNotify} from "vant";
 import {useI18n} from "vue-i18n";
 interface Props {
   animation?: string,
@@ -31,10 +31,8 @@ const { execute: giftToType } = useApiClient(async (type:boolean): Promise<any> 
         user.value.integral_num = user.value.integral_num + detail.integral_num;
         emits('handleClose');
       animationDiv.value.destroy();
-      showNotify({
-        message: t('successful'),
-        color: '#FFFFFF',
-        background: '#000000',
+      showDialog({
+        title: t('recharged',{'coin': detail.integral_num})
       })
     }
   } else {
@@ -43,10 +41,8 @@ const { execute: giftToType } = useApiClient(async (type:boolean): Promise<any> 
     if (detail && detail.gift_tg_id && detail.integral_num) {
         emits('handleClose');
       animationDiv.value.destroy();
-      showNotify({
-        message: t('successful'),
-        color: '#FFFFFF',
-        background: '#000000',
+      showDialog({
+        title: t('gift_send')
       })
     }
   }

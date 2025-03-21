@@ -23,5 +23,7 @@
   "play": "Play",
   "play_coin": "Play the game with {coin} credits?",
   "get_coin": "Congratulations! You have won {coin} credits",
+  "recharged": "{coin} credits have been recharged",
+  "gift_send": "The gift has been sent to Telegram",
   "free_lottery": "Free lottery draw"
 }
