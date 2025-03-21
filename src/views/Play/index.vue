@@ -251,158 +251,161 @@ onMounted(async () => {
 
 <template>
   <div class="main">
-    <div class="play-head">
-      <div class="left">
-        {{ t('play_title') }}
-      </div>
-      <div v-on:click="() => router.push({ name: 'Pay' })" class="right">
-        <svg class="right-add" xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
-          <g clip-path="url(#clip0_483_652)">
-            <path d="M7.00269 1.319C8.83389 1.319 10.498 2.05139 11.6959 3.26005H11.7013C12.9046 4.45855 13.6477 6.12198 13.6477 7.94254C13.6477 9.77911 12.9046 11.4378 11.7013 12.6411L11.6595 12.6776C10.461 13.8552 8.81303 14.5822 7.00274 14.5822C5.17686 14.5822 3.51818 13.8391 2.32025 12.6411H2.31488C1.11154 11.4378 0.37915 9.77915 0.37915 7.94259C0.37915 6.12203 1.11154 4.45855 2.31484 3.2601L2.3566 3.22361C3.5551 2.04121 5.19235 1.319 7.00269 1.319Z" fill="#3290EC"/>
-            <path d="M6.27026 4.74088V7.2102H3.80099C3.3927 7.2102 3.06323 7.53971 3.06323 7.94258C3.06323 8.36146 3.39275 8.68566 3.80099 8.68566H6.27026V11.1501C6.27026 11.5579 6.60509 11.8879 7.00265 11.8879C7.41089 11.8879 7.74572 11.5579 7.74572 11.1501V8.68566H10.215C10.6233 8.68566 10.948 8.36146 10.948 7.94258C10.948 7.53971 10.6233 7.2102 10.215 7.2102H7.74572V4.74088C7.74572 4.34328 7.41089 4.00849 7.00265 4.00849C6.60509 4.00849 6.27026 4.34328 6.27026 4.74088Z" fill="white"/>
-          </g>
-          <defs>
-            <clipPath id="clip0_483_652">
-              <rect width="14" height="14" fill="white" transform="translate(0 0.883835)"/>
-            </clipPath>
-          </defs>
-        </svg>
-        <div class="right-amount">
-          <div>{{user.integral_num}}</div>
-          <img class="right-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+    <div class="main-content">
+      <div class="play-head">
+        <div class="left">
+          {{ t('play_title') }}
+        </div>
+        <div v-on:click="() => router.push({ name: 'Pay' })" class="right">
+          <svg class="right-add" xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
+            <g clip-path="url(#clip0_483_652)">
+              <path d="M7.00269 1.319C8.83389 1.319 10.498 2.05139 11.6959 3.26005H11.7013C12.9046 4.45855 13.6477 6.12198 13.6477 7.94254C13.6477 9.77911 12.9046 11.4378 11.7013 12.6411L11.6595 12.6776C10.461 13.8552 8.81303 14.5822 7.00274 14.5822C5.17686 14.5822 3.51818 13.8391 2.32025 12.6411H2.31488C1.11154 11.4378 0.37915 9.77915 0.37915 7.94259C0.37915 6.12203 1.11154 4.45855 2.31484 3.2601L2.3566 3.22361C3.5551 2.04121 5.19235 1.319 7.00269 1.319Z" fill="#3290EC"/>
+              <path d="M6.27026 4.74088V7.2102H3.80099C3.3927 7.2102 3.06323 7.53971 3.06323 7.94258C3.06323 8.36146 3.39275 8.68566 3.80099 8.68566H6.27026V11.1501C6.27026 11.5579 6.60509 11.8879 7.00265 11.8879C7.41089 11.8879 7.74572 11.5579 7.74572 11.1501V8.68566H10.215C10.6233 8.68566 10.948 8.36146 10.948 7.94258C10.948 7.53971 10.6233 7.2102 10.215 7.2102H7.74572V4.74088C7.74572 4.34328 7.41089 4.00849 7.00265 4.00849C6.60509 4.00849 6.27026 4.34328 6.27026 4.74088Z" fill="white"/>
+            </g>
+            <defs>
+              <clipPath id="clip0_483_652">
+                <rect width="14" height="14" fill="white" transform="translate(0 0.883835)"/>
+              </clipPath>
+            </defs>
+          </svg>
+          <div class="right-amount">
+            <div>{{user.integral_num}}</div>
+            <img class="right-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+          </div>
         </div>
       </div>
-    </div>
-    <Skeleton v-if="isFetching" class="card-list" loading>
-      <template #template>
-        <div class="card">
-        </div>
-        <div class="card">
-        </div>
-        <div class="card">
-        </div>
-        <div class="card">
-        </div>
-        <div class="card">
-        </div>
-      </template>
-    </Skeleton>
+      <Skeleton v-if="isFetching" class="card-list" loading>
+        <template #template>
+          <div class="card">
+          </div>
+          <div class="card">
+          </div>
+          <div class="card">
+          </div>
+          <div class="card">
+          </div>
+          <div class="card">
+          </div>
+        </template>
+      </Skeleton>
 
-    <div v-else class="card-list">
-      <div class="card-box">
-        <div class="card-content" :class="[{'animation1': navType == 4},{'animation2': navType == 5},{'animation3': navType == 6}]">
-          <div v-for="(item, i) in listTop" :key="i" class="card">
-            <div class="card-chance">
-              {{item.probability + '%'}}
-            </div>
-            <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(item.gift_tg_id))].icon" alt="">
-                    <img class="card-icon-tag" v-if="item.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">
-            <div class="card-button">
-              <div>
-                {{item.star_price}}
+      <div v-else class="card-list">
+        <div class="card-box">
+          <div class="card-content" :class="[{'animation1': navType == 4},{'animation2': navType == 5},{'animation3': navType == 6}]">
+            <div v-for="(item, i) in listTop" :key="i" class="card">
+              <div class="card-chance">
+                {{item.probability + '%'}}
               </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+              <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(item.gift_tg_id))].icon" alt="">
+              <img class="card-icon-tag" v-if="item.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">
+              <div class="card-button">
+                <div>
+                  {{item.star_price}}
+                </div>
+                <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+              </div>
             </div>
           </div>
-        </div>
 
-      </div>
-    </div>
-    <div class="play-title second">
-      {{ t('play_title_second') }}
-    </div>
-    <div class="play-nav">
-      <div v-on:click="()=>changeType(4)" class="play-nav-child" :class="{'active': navType == 4}">
-        <div CLASS="play-nav-title">
-          25
         </div>
-        <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
-      <div v-on:click="()=>changeType(5)" class="play-nav-child" :class="{'active': navType == 5}">
-        <div CLASS="play-nav-title">
-          50
+      <div class="play-title second">
+        {{ t('play_title_second') }}
+      </div>
+      <div class="play-nav">
+        <div v-on:click="()=>changeType(4)" class="play-nav-child" :class="{'active': navType == 4}">
+          <div CLASS="play-nav-title">
+            25
+          </div>
+          <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
         </div>
-        <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
-      </div>
-      <div v-on:click="()=>changeType(6)" class="play-nav-child" :class="{'active': navType == 6}">
-        <div CLASS="play-nav-title">
-          100
+        <div v-on:click="()=>changeType(5)" class="play-nav-child" :class="{'active': navType == 5}">
+          <div CLASS="play-nav-title">
+            50
+          </div>
+          <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
         </div>
-        <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
+        <div v-on:click="()=>changeType(6)" class="play-nav-child" :class="{'active': navType == 6}">
+          <div CLASS="play-nav-title">
+            100
+          </div>
+          <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
+        </div>
       </div>
-    </div>
-    <div class="play-detail">
-      <div class="play-box" ref="playBox">
-        <Skeleton v-if="isFetching" class="play-card-list" loading>
-          <template #template>
-            <div class="card">
-            </div>
-            <div class="card">
-            </div>
-            <div class="card">
-            </div>
-            <div class="card">
-            </div>
-            <div class="card">
-            </div>
-          </template>
-        </Skeleton>
-        <div ref="cardList" class="play-card-list">
-          <div v-for="(i, index) in listMain" :index="index" :key="index"  class="card" :class="{'hover': index == 2}">
-            <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(i.gift_tg_id))].icon" alt="">
-            <img class="card-icon-tag" v-if="i.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">
-            <div class="card-button">
-              <div>
-                {{i.star_price}}
+      <div class="play-detail">
+        <div class="play-box" ref="playBox">
+          <Skeleton v-if="isFetching" class="play-card-list" loading>
+            <template #template>
+              <div class="card">
               </div>
-              <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+              <div class="card">
+              </div>
+              <div class="card">
+              </div>
+              <div class="card">
+              </div>
+              <div class="card">
+              </div>
+            </template>
+          </Skeleton>
+          <div ref="cardList" class="play-card-list">
+            <div v-for="(i, index) in listMain" :index="index" :key="index"  class="card" :class="{'hover': index == 2}">
+              <img class="card-icon" :src="TG_ICON[TG_ICON.findIndex(ii => ii.value === parseInt(i.gift_tg_id))].icon" alt="">
+              <img class="card-icon-tag" v-if="i.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">
+              <div class="card-button">
+                <div>
+                  {{i.star_price}}
+                </div>
+                <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="play-bg">
+            <svg class="play-bg-top" xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M5 6.52197L10 -0.000204086H0L5 6.52197Z" fill="#3290EC"/>
+            </svg>
+            <svg class="play-bg-middle" xmlns="http://www.w3.org/2000/svg" width="2" height="123" viewBox="0 0 2 123" fill="none">
+              <path d="M1 0.5V122.5" stroke="#3290EC" stroke-width="0.5" stroke-linecap="square" stroke-dasharray="4 4"/>
+            </svg>
+            <svg class="play-bg-bottom" xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0L10 6.56853H0L5 0Z" fill="#3290EC"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="play-button" v-on:click="() => clickButton()">
+        <div>
+          {{ t('play_button') }}
+        </div>
+        <div class="play-button-icon">
+          <img class="play-dice" :src="NEW_IMAGES.DICE" alt="">
+          <img class="play-round" :src="NEW_IMAGES.ROUND" alt="">
+        </div>
+      </div>
+      <div v-on:click="() => joinChannel()" class="join_channel">
+        <img :src="NEW_IMAGES.JOIN_CHANNEL" alt="">
+      </div>
+      <Popup v-model:show="showPopup" class="blue-popup" teleport="#app">
+        <PlayPopup :id="animationId" :price="price" :animation="animation" @handle-close="closePopup" />
+      </Popup>
+      <Popup v-model:show="showFirst" class="first-popup" position="center" teleport="#app">
+        <div class="first-content">
+          <img class="first-icon" :src="NEW_IMAGES.FIRST_ICON" alt="">
+          <div class="first-title">
+            {{ t('play_tip') }}
+          </div>
+          <div class="first-button">
+            <div v-on:click="() => closeFirstPopup()" class="first-button-child">
+              {{ t('play_look') }}
+            </div>
+            <div  v-on:click="() => clickFirstPopup()" class="first-button-child">
+              {{ t('free_lottery') }}
             </div>
           </div>
         </div>
-        <div class="play-bg">
-          <svg class="play-bg-top" xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M5 6.52197L10 -0.000204086H0L5 6.52197Z" fill="#3290EC"/>
-          </svg>
-          <svg class="play-bg-middle" xmlns="http://www.w3.org/2000/svg" width="2" height="123" viewBox="0 0 2 123" fill="none">
-            <path d="M1 0.5V122.5" stroke="#3290EC" stroke-width="0.5" stroke-linecap="square" stroke-dasharray="4 4"/>
-          </svg>
-          <svg class="play-bg-bottom" xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0L10 6.56853H0L5 0Z" fill="#3290EC"/>
-          </svg>
-        </div>
-      </div>
+      </Popup>
     </div>
-    <div class="play-button" v-on:click="() => clickButton()">
-      <div>
-        {{ t('play_button') }}
-      </div>
-      <div class="play-button-icon">
-        <img class="play-dice" :src="NEW_IMAGES.DICE" alt="">
-        <img class="play-round" :src="NEW_IMAGES.ROUND" alt="">
-      </div>
-    </div>
-    <div v-on:click="() => joinChannel()" class="join_channel">
-      <img :src="NEW_IMAGES.JOIN_CHANNEL" alt="">
-    </div>
-    <Popup v-model:show="showPopup" class="blue-popup" teleport="#app">
-      <PlayPopup :id="animationId" :price="price" :animation="animation" @handle-close="closePopup" />
-    </Popup>
-    <Popup v-model:show="showFirst" class="first-popup" position="center" teleport="#app">
-      <div class="first-content">
-        <img class="first-icon" :src="NEW_IMAGES.FIRST_ICON" alt="">
-        <div class="first-title">
-          {{ t('play_tip') }}
-        </div>
-        <div class="first-button">
-          <div v-on:click="() => closeFirstPopup()" class="first-button-child">
-            {{ t('play_look') }}
-          </div>
-          <div  v-on:click="() => clickFirstPopup()" class="first-button-child">
-            {{ t('free_lottery') }}
-          </div>
-        </div>
-      </div>
-    </Popup>
+
   </div>
 </template>
 
@@ -413,8 +416,19 @@ onMounted(async () => {
   align-items: center;
   font-family: 'OPPOSansBold';
   min-height: 100%;
-  padding-bottom: 100px;
-
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+  .main-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   .play-head {
     display: flex;
     justify-content: space-between;
