@@ -88,7 +88,6 @@ class Client {
     const _window = window as any
     if (!_window.Telegram)
       await importScript(Client.TG_MINI_APP_SDK_URL)
-      _window.Telegram?.WebApp?.setBottomBarHeight(0);
     return _window.Telegram?.WebApp?.setBottomBarColor(color)
   }
 
