@@ -6,6 +6,7 @@ import {useApiClient} from "@/api/hooks/useClient";
 import {Apis} from "@/api";
 import {useUserStoreRefs} from "@/store/modules/user";
 import {showNotify} from "vant";
+import {useI18n} from "vue-i18n";
 interface Props {
   animation?: string,
   id?: number,
@@ -16,6 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   id: 0,
   price: 0,
 })
+const { t } = useI18n()
 const { user } = useUserStoreRefs()
 const { animation,id } = toRefs(props)
 const emits = defineEmits(['handleClose'])
@@ -30,7 +32,7 @@ const { execute: giftToType } = useApiClient(async (type:boolean): Promise<any> 
         emits('handleClose');
       animationDiv.value.destroy();
       showNotify({
-        message: 'Successful',
+        message: t('successful'),
         color: '#FFFFFF',
         background: '#000000',
       })
@@ -42,7 +44,7 @@ const { execute: giftToType } = useApiClient(async (type:boolean): Promise<any> 
         emits('handleClose');
       animationDiv.value.destroy();
       showNotify({
-        message: 'Successful',
+        message: t('successful'),
         color: '#FFFFFF',
         background: '#000000',
       })
@@ -93,23 +95,23 @@ function closePopup(){
 <!--            <img id="lottie-div" class="popup-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">-->
       <div ref="lottieDiv" id="lottie-div" class="popup-icon"  />
       <div class="popup-title">
-        You won a gift
+        {{t('won')}}
       </div>
       <div class="popup-desc">
-        What do you want to do with him?
+        {{t('want')}}
       </div>
     </div>
     <div>
       <div class="popup-button-top">
         <div v-on:click="() => giftToType()" class="popup-button-child">
-          Get to Telegram
+          {{t('get')}}
         </div>
         <div v-on:click="() => giftToType(true)" class="popup-button-child">
-          Sell it for {{price}}
+          {{t('sell',{'price':price})}}
         </div>
       </div>
       <div  v-on:click="() => closePopup()" class="popup-button bottom-button">
-        Keep in App
+        {{t('keep')}}
       </div>
     </div>
   </div>
@@ -145,16 +147,16 @@ function closePopup(){
     transform: translateY(calc(-75%));
   }
   .popup-title {
-    color: #F2F2F2;
+    color: #010105;
     font-size: 20px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: bold;
     line-height: normal;
     margin-top: 20px;
   }
   .popup-desc {
     margin-top: 6px;
-    color: #F2F2F2;
+    color: #010105;
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
@@ -182,7 +184,7 @@ function closePopup(){
     text-align: justify;
     font-size: 16px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: bold;
     line-height: normal;
   }
   .popup-button {
@@ -198,17 +200,18 @@ function closePopup(){
     text-align: justify;
     font-size: 16px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: bold;
     line-height: normal;
     &.bottom-button {
-      color: #FFF;
+      color: #0B3660;
       text-align: justify;
       font-family: "PingFang SC";
       font-size: 16px;
       font-style: normal;
-      font-weight: 400;
+      font-weight: bold;
       margin-top: 10px;
       line-height: normal;
+      background: rgba(50, 144, 236, 0.30);
     }
   }
 }

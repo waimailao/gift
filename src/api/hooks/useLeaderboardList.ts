@@ -6,7 +6,7 @@ export function useRequestList(
   api: any,
   options: ApiClientOption = {},
 ) {
-  const currentPage = ref(1)
+  const current_page = ref(1)
   const pageSize = ref(10)
   const totalPage = ref(0)
   const totalRecords = ref(0)
@@ -16,30 +16,31 @@ export function useRequestList(
   const limitPage = ref(20)
 
   const { execute, isFetching } = useApiClient(
-    async (index = currentPage.value) => {
+    async (index = current_page.value) => {
       const {
         rankList,
-        currentPage: resCurrentPage,
+        current_page: resCurrentPage,
         pageSize: resPageSize = 10,
         totalPage: resTotalPage,
         totalRecords: resTotalRecords,
         ...otherResponseData
       } = await api({ index, pageSize: pageSize.value })
-      currentPage.value = resCurrentPage || 1
+      current_page.value = resCurrentPage || 1
+      console.log(rankList,current_page.value,1112222)
       totalPage.value = resTotalPage || 0
       totalRecords.value = resTotalRecords || 0
       otherData.value = otherResponseData
-      data.value = (data.value && currentPage.value > 1) ? [...data.value, ...rankList] : rankList
-      finished.value = ((currentPage.value + 1) > totalPage.value || currentPage.value > limitPage.value)
+      data.value = (data.value && current_page.value > 1) ? [...data.value, ...rankList] : rankList
+      finished.value = ((current_page.value + 1) > totalPage.value || currentPage.value > limitPage.value)
     },
     options,
   )
 
   const toNext = () => {
-    if (currentPage.value + 1 > totalPage.value || isFetching.value)
+    if (current_page.value + 1 > totalPage.value || isFetching.value)
       return
 
-    return execute(currentPage.value + 1)
+    return execute(current_page.value + 1)
   }
 
   const toPage = (page: number) => execute(page)
@@ -52,7 +53,7 @@ export function useRequestList(
     data,
     isFetching,
     finished,
-    currentPage,
+    current_page,
     otherData,
     pageSize,
     totalPage,

@@ -4,6 +4,7 @@ import App from './App.vue'
 import { setupStore } from './store'
 import { setupRouter } from './router'
 import { setupTelegram } from './services/telegram'
+import { setupI18n } from './services/i18n'
 import './lib/sketch'
 
 // style
@@ -17,6 +18,7 @@ async function bootstrap() {
   setupStore(app)
   setupTelegram()
   setupRouter(app)
+  setupI18n(app)
   // mount
   app.mount('#app')
 

@@ -1,3 +1,27 @@
 {
-
+  "play_title": "You can definitely win the prize",
+  "play_button": "100% winning rate",
+  "play_tip": "Congratulations! You have won a free lottery draw",
+  "play_title_second": "Participate in the game",
+  "play_look": "Take a look first",
+  "yes": "Yes",
+  "no": "No",
+  "rank": "Rank",
+  "home_desc": "Here you can see the luckiest players",
+  "home_card": "{game} games, {credit} credits, {limit} limited items",
+  "my": "My",
+  "successful": "Successful",
+  "won": "You won a gift",
+  "want": "What do you want to do with him?",
+  "get": "Get to Telegram",
+  "keep": "Keep in App",
+  "sell": "Sell it for {price}",
+  "my_all": "All",
+  "gift_point": "Gift Points",
+  "select_point": "Select the number of stars you want.",
+  "my_rare": "Rare",
+  "play": "Play",
+  "play_coin": "Play the game with {coin} credits?",
+  "get_coin": "Congratulations! You have won {coin} credits",
+  "free_lottery": "Free lottery draw"
 }

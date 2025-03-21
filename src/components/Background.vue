@@ -2,14 +2,16 @@
 // utils
 import { isiOS } from '@/constants/is'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 </script>
 
 <template>
   <div class="container" :class="{ 'ios-container': isiOS() }">
-    <div class="launch-content">
+    <div class="launch-content" :class="{'pay': route.name == 'Pay'}">
       <slot />
     </div>
     <div v-if="route.name != 'Pay'" class="bottom-nav">
@@ -22,7 +24,7 @@ const router = useRouter()
           </svg>
         </div>
         <div class="nav-title">
-          排行榜
+          {{t('rank')}}
         </div>
       </div>
       <div v-on:click="() => router.push({ name: 'Play' })" class="nav" :class="{'selected': route.name == 'Play'}">
@@ -32,7 +34,7 @@ const router = useRouter()
           </svg>
         </div>
         <div class="nav-title">
-          Play
+          {{t('play')}}
         </div>
       </div>
       <div v-on:click="() => router.push({ name: 'My' })" class="nav" :class="{'selected': route.name == 'My'}">
@@ -42,7 +44,7 @@ const router = useRouter()
           </svg>
         </div>
         <div class="nav-title">
-          我的
+          {{t('my')}}
         </div>
       </div>
     </div>
@@ -80,13 +82,16 @@ const router = useRouter()
     min-height: 100vh;
     overflow: auto;
     overscroll-behavior: none;
-    background: #010101;
+    background: #FFF;
+    &.pay {
+      background: #010101;
+    }
   }
   .bottom-nav {
     height: 72px;
     width: 100%;
     position: fixed;
-    background: #010101;
+    background: #FFF;
     bottom: 0;
     border-top: 1px solid #C8C1C1;
     display: flex;

@@ -25,14 +25,18 @@ function doLottery(data: any = null, type: number = 1) {
 function account() {
   return get('/api/v1/me')
 }
-function myGifts() {
-  return get('/api/v1/myGifts')
+function myGifts(type:string,page:number,limit:number) {
+  return get('/api/v1/myGifts/' + type + '/'+ page + '/' + limit)
 }
 function strIntegralList() {
   return get('/api/v1/strIntegralList')
 }
 function allRankList() {
   return get('/api/v1/allRankList')
+}
+
+function rankList(type:number,page:number,limit:number) {
+  return get('/api/v1/rankList/' + type + '/'+ page + '/' + limit)
 }
 
 function leave(data: any = null) {
@@ -72,4 +76,5 @@ export default {
   myGifts,
   doLottery,
   allRankList,
+  rankList,
 }

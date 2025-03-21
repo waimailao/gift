@@ -34,7 +34,11 @@ import STAR_4 from './star_4.png'
 import STAR_5 from './star_5.png'
 import STAR_6 from './star_6.png'
 import FIRST_ICON from './first_icon.png'
+import COIN from './coin.png'
+import JOIN_CHANNEL from './join_channel.png'
 export const NEW_IMAGES = {
+  JOIN_CHANNEL,
+  COIN,
   FIRST_ICON,
   STAR_1,
   STAR_2,

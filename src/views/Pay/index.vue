@@ -12,7 +12,9 @@ import {throttle} from "lodash-es";
 import {TGClient} from "@/services/telegram";
 import {useUserStoreRefs} from "@/store/modules/user";
 import {useRouter} from "vue-router";
+import {useI18n} from "vue-i18n";
 // import {TGClient} from "@/services/telegram";
+const { t } = useI18n()
 const { user } = useUserStoreRefs()
 const router = useRouter()
 const list:any = ref(null)
@@ -66,17 +68,19 @@ const onClickTelegramStarBoost = throttle(() => {
 <template>
   <div class="main">
     <div v-on:click="() => router.push({ name: 'Play' })" class="back-btn">
-      <img class="back-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAQlSURBVHgB7ZxPUhNREMa/l2jBkiNwBLhBAKlypzkB4QTiQgrcABtBXAAnAE8A7qhCQjwBHIEjsESt5Nk9GAUlmX7JzCS8+X6bSYWuItXf/Hn9Tb8GCCGEEEIIIYQQQgghhBASOw5jSG3N16rAhn6UX3jjPU46wFZrx10jMsZOgIV1vwSPo3+/98B15xazrX13g4ioYIxYWPWvH0u+ImfKdGUSK4iMsRFg8b2fQRWH/WKcxwwiYywEkHv+dLuDYzn7p/rFedf/70+RkQugyZcfcaG3mNTgDk4QGSMVICj5+hD+8fjz4SkzMgFqK34qJPnPgbnYVkDKM4wATX51AhcISP5phDWAMpIroDqJPVlXpq9opAirVFCPNflK4QLMr/s9OTQssRWHubMP7goRU6gAL9b8hqzlTcWUVL7LsSdfKUwATb4kddMSK3FbzR13hBJQiBc0QPJNsTGQuwC9zLXHKFvylVwFUH+n08GlJVYs54PmRxed2ZZGbgIkyfey1vcG/8bh5Hzb1VFCcinEuuaaqJuefI+r9i2WUVIyvwJC/Z12hC9ZQsh0GRqa/Fj9nRAyEyDxd3xy25k2hEft74SQmQCJuWb0d5j8v2QiwMKaPzSba47Jv8/Qq6DfVW7DFNwWf2c3fn8nhKEECLQYlpu7LrpXisMy8C2I5lo2DFQHiKe/IrbyniW2jP5OCMEC0FzLliABgvydMuJx0nZ4G9LDahZAq9yqE2eTye+Px42IMGsVwfwQFqX2mXwDDlNV9G+xvI9ZAAl8BWIjoIfVvgyVKhbERkAPq10A8e1BbHh8sYaaBRADbZlXgQE1G519H4NZADXQ1EijCD3QrVTAt+ces6d5LEO7zK/5hjM+5dWqkEJsC6QnwV6Qejpeig1LrAi1KYJtgPRkIDOuue32JbmmM5si9Geol/LiiG76u+2klv/UON92n0EeMHRXhLwN25fDG1NwB/VzvhN4QCZtKSLCkRyWUgPFJ6l0MHf2iW/FumTWFyQ29aWpBA80q2Ins66I9kRSI6Sf2VKma++Quqsg2XbGvZSk/oRt71cyekAbs0p+JWTemhgsAlsTs0XLcG28ko/XabHaRacNXdpVh5KSyxalxDeqoG7yjRxmkl2TJSXXDRpSqNX83e3IwtH5jitdm3qum/S+7riWNmQZwxtltCxy3yVJ864/hWxTDTbvVn1p9ooVsk21C827/ylUAMXsG0GbqZNCrYWIKXxWhKx0GnIwndm642bxnY9uTNl9RjItpa3D94y+UbuK45h9o8JvQV1qm36q+j3pM009w2P2jUYmgELfaMQz40J9I84NzYE/Ihh8I84NzQlr0xfnhuaITseSM7z/wA7ODc2XFPOOc0OLINlN6VDXPsvki7vx9QdlH+pBCCGEEEIIIYQQQgghhJCnyy8RxJsbwcYF0QAAAABJRU5ErkJggg==">
+      <svg xmlns="http://www.w3.org/2000/svg" width="8" height="13" viewBox="0 0 8 13" fill="none">
+        <path d="M1.42244 5.67816L0.795543 6.3039C0.684506 6.41609 0.681037 6.59422 0.78976 6.70178L6.03857 12.042C6.14614 12.1507 6.32541 12.1472 6.43645 12.0362L7.20446 11.2682C7.31549 11.1571 7.31896 10.9779 7.21024 10.8703L2.91218 6.4959L7.20099 2.03939C7.30855 1.93298 7.30508 1.75601 7.1952 1.64498L6.43414 0.885067C6.3231 0.77403 6.14729 0.771717 6.03973 0.879284L1.42244 5.67816Z" fill="#F2F2F2"/>
+      </svg>
     </div>
     <img class="pay-bg" :src="NEW_IMAGES.PAY_BG" alt="">
     <div class="pay-icon">
-      <img :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
+      <img :src="NEW_IMAGES.COIN" alt="">
     </div>
     <div class="pay-title">
-      gift 积分
+      {{t('gift_point')}}
     </div>
     <div class="pay-desc">
-      Select the number of stars you want.
+      {{t('select_point')}}
     </div>
     <div class="card-list">
       <div  v-for="(item, index) in list" :key="index" class="card" v-on:click="()=>{clickButton(item)}">
@@ -88,7 +92,7 @@ const onClickTelegramStarBoost = throttle(() => {
           <img v-if="index == 4" class="star-icon" :src="NEW_IMAGES.STAR_5">
           <img v-if="index == 5" class="star-icon" :src="NEW_IMAGES.STAR_6">
           <div class="star-text">
-            {{item.tg_star_amount}} star
+            {{item.tg_star_amount}} points
           </div>
         </div>
         <div class="card-coin">
@@ -110,13 +114,14 @@ const onClickTelegramStarBoost = throttle(() => {
   align-items: center;
   font-family: 'OPPOSansBold';
   position: relative;
+  background: #010101;
   .back-btn {
     position: fixed;
-    bottom: 20px;
+    top: 20px;
     left: 16px;
     width: 30px;
     height: 30px;
-    background: #2c2c30;
+    z-index: 999;
     cursor: pointer;
     img {
       width: 100%;

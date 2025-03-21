@@ -10,6 +10,7 @@ import { useIntervalFn } from '@vueuse/core'
 
 // utils
 import { NEW_IMAGES } from '@/assets'
+import { useI18n } from 'vue-i18n'
 import {useApiClient} from "@/api/hooks/useClient";
 import type { BackendResponseData } from 'axios'
 import {Apis} from "@/api";
@@ -17,7 +18,9 @@ import {TGClient} from "@/services/telegram";
 import {sleep} from "@/utils";
 import {useUserStoreRefs} from "@/store/modules/user";
 import {useRouter} from "vue-router";
+import {ENV} from "@/constants/env";
 const { user } = useUserStoreRefs()
+const { t } = useI18n()
 const router = useRouter()
 const cardList = ref<HTMLElement | null>(null)
 const playBox = ref<HTMLElement | null>(null)
@@ -86,9 +89,9 @@ async function handleWalletUnbinding(action: string): Promise<any> {
 function clickButton() {
   if (!canClick.value) return;
   showConfirmDialog({
-    title: '以' + (navType.value == 6 ? 100 : (navType.value == 5 ? 50 : 25)) + '积分进行游戏？',
-    confirmButtonText: '是',
-    cancelButtonText: '否',
+    title: t('play_coin',{'coin': navType.value == 6 ? 100 : (navType.value == 5 ? 50 : 25)}),
+    confirmButtonText: t('yes'),
+    cancelButtonText: t('no'),
     showCancelButton: true,
     confirmButtonColor: 'black',
     beforeClose: handleWalletUnbinding,
@@ -157,7 +160,7 @@ async function openPopup(integral:number = 0) {
   await sleep(250)
   if (integral) {
     showDialog({
-      title: '恭喜您获得'+ integral +'积分',
+      title: t('get_coin',{'coin': integral}),
     })
     changeType(navType.value);
     closePopup()
@@ -221,6 +224,9 @@ function closeFirstPopup() {
   showFirst.value = false;
   user.value.first_lottery = 0;
 }
+function joinChannel() {
+  TGClient.shareLink(ENV.CHANNEL_LINK,false)
+}
 async function clickFirstPopup() {
   user.value.first_lottery = 0;
   showFirst.value = false;
@@ -245,10 +251,20 @@ onMounted(async () => {
   <div class="main">
     <div class="play-head">
       <div class="left">
-        您可以100%获得奖品
+        {{ t('play_title') }}
       </div>
-      <div class="right">
-        <div v-on:click="() => router.push({ name: 'Pay' })" class="right-add">+</div>
+      <div v-on:click="() => router.push({ name: 'Pay' })" class="right">
+        <svg class="right-add" xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
+          <g clip-path="url(#clip0_483_652)">
+            <path d="M7.00269 1.319C8.83389 1.319 10.498 2.05139 11.6959 3.26005H11.7013C12.9046 4.45855 13.6477 6.12198 13.6477 7.94254C13.6477 9.77911 12.9046 11.4378 11.7013 12.6411L11.6595 12.6776C10.461 13.8552 8.81303 14.5822 7.00274 14.5822C5.17686 14.5822 3.51818 13.8391 2.32025 12.6411H2.31488C1.11154 11.4378 0.37915 9.77915 0.37915 7.94259C0.37915 6.12203 1.11154 4.45855 2.31484 3.2601L2.3566 3.22361C3.5551 2.04121 5.19235 1.319 7.00269 1.319Z" fill="#3290EC"/>
+            <path d="M6.27026 4.74088V7.2102H3.80099C3.3927 7.2102 3.06323 7.53971 3.06323 7.94258C3.06323 8.36146 3.39275 8.68566 3.80099 8.68566H6.27026V11.1501C6.27026 11.5579 6.60509 11.8879 7.00265 11.8879C7.41089 11.8879 7.74572 11.5579 7.74572 11.1501V8.68566H10.215C10.6233 8.68566 10.948 8.36146 10.948 7.94258C10.948 7.53971 10.6233 7.2102 10.215 7.2102H7.74572V4.74088C7.74572 4.34328 7.41089 4.00849 7.00265 4.00849C6.60509 4.00849 6.27026 4.34328 6.27026 4.74088Z" fill="white"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_483_652">
+              <rect width="14" height="14" fill="white" transform="translate(0 0.883835)"/>
+            </clipPath>
+          </defs>
+        </svg>
         <div class="right-amount">
           <div>{{user.integral_num}}</div>
           <img class="right-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
@@ -291,7 +307,7 @@ onMounted(async () => {
       </div>
     </div>
     <div class="play-title second">
-      参与游戏
+      {{ t('play_title_second') }}
     </div>
     <div class="play-nav">
       <div v-on:click="()=>changeType(4)" class="play-nav-child" :class="{'active': navType == 4}">
@@ -356,12 +372,15 @@ onMounted(async () => {
     </div>
     <div class="play-button" v-on:click="() => clickButton()">
       <div>
-        100% winning rate
+        {{ t('play_button') }}
       </div>
       <div class="play-button-icon">
         <img class="play-dice" :src="NEW_IMAGES.DICE" alt="">
         <img class="play-round" :src="NEW_IMAGES.ROUND" alt="">
       </div>
+    </div>
+    <div v-on:click="() => joinChannel()" class="join_channel">
+      <img :src="NEW_IMAGES.JOIN_CHANNEL" alt="">
     </div>
     <Popup v-model:show="showPopup" class="blue-popup" teleport="#app">
       <PlayPopup :id="animationId" :price="price" :animation="animation" @handle-close="closePopup" />
@@ -370,14 +389,14 @@ onMounted(async () => {
       <div class="first-content">
         <img class="first-icon" :src="NEW_IMAGES.FIRST_ICON" alt="">
         <div class="first-title">
-          恭喜你获得 <span>1</span> 次免费抽奖
+          {{ t('play_tip') }}
         </div>
         <div class="first-button">
           <div v-on:click="() => closeFirstPopup()" class="first-button-child">
-            先看看
+            {{ t('play_look') }}
           </div>
           <div  v-on:click="() => clickFirstPopup()" class="first-button-child">
-            免费抽奖
+            {{ t('free_lottery') }}
           </div>
         </div>
       </div>
@@ -392,7 +411,7 @@ onMounted(async () => {
   align-items: center;
   font-family: 'OPPOSansBold';
   min-height: 100%;
-  padding-bottom: 120px;
+  padding-bottom: 100px;
 
   .play-head {
     display: flex;
@@ -401,8 +420,8 @@ onMounted(async () => {
     margin-top: 20px;
     width: 100%;
     .left {
-      color: #FFF;
-      font-size: 16px;
+      color: #010105;
+      font-size: 15px;
       font-style: normal;
       font-weight: 400;
       line-height: normal;
@@ -411,10 +430,8 @@ onMounted(async () => {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-radius: 14px;
       min-width: 70.403px;
       height: 20.241px;
-      background: #1C1C1E;
       color: #CF8A37;
       font-family: "DINAlternate";
       font-size: 16px;
@@ -423,14 +440,16 @@ onMounted(async () => {
       line-height: normal;
       padding: 0 6px;
       gap: 8px;
+      border-radius: 14px;
+      border: 1px solid #3290EC;
+      background: #E8EDF3;
       .right-icon {
         width: 12.242px;
         height: 13.14px;
       }
       .right-add {
-        width: 18px;
-        height: 18px;
-        border: 1px solid #CF8A37;
+        width: 14px;
+        height: 14px;
         border-radius: 50%;
         display: flex;
         justify-content: center;
@@ -449,23 +468,24 @@ onMounted(async () => {
     width: 100%;
     padding-left: 15px;
     margin-top: 20px;
-    color: #FFF;
+    color: #010105;
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    &.second {
-      margin-top: 40px;
-    }
+
   }
 
   .card-list {
     display: flex;
     width: 100%;
-    padding: 12px 24px;
+    padding: 16px 16px;
     gap: 4.5px;
     .card-box {
       width: 100%;
+      padding: 12px 8px;
+      background: #E8EDF3;
+      border-radius: 14px;
       overflow-x: hidden;
       .card-content {
         display: flex;
@@ -502,7 +522,7 @@ onMounted(async () => {
       height: 91px;
       flex-shrink: 0;
       border-radius: 8px;
-      background: #2E2E2E;
+      background: #FFF;
       display: flex;
       position: relative;
       flex-direction: column;
@@ -519,7 +539,7 @@ onMounted(async () => {
         height: 13.094px;
         flex-shrink: 0;
         border-radius: 0px 0px 5.85px 5.85px;
-        background: #4D280B;
+        background: #FFF3E9;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -542,12 +562,12 @@ onMounted(async () => {
         height: 20px;
         flex-shrink: 0;
         border-radius: 15px;
-        background: #545454;
+        background: #F5F5F5;
         display: flex;
         gap: 4px;
         align-items: center;
         justify-content: center;
-        color: #F2F2F2;
+        color: #000;
         font-family: "DINAlternate";
         font-size: 14px;
         font-style: normal;
@@ -571,13 +591,13 @@ onMounted(async () => {
       gap: 8px;
       width: 100%;
       height: 34px;
-      background: #1C1C1E;
+      background: #EDF5FD;
       border-radius: 8px;
       justify-content: center;
       align-items: center;
       cursor: pointer;
       .play-nav-title {
-        color: #FFF;
+        color: #000;
         text-align: justify;
         font-family: "DINAlternate";
         font-size: 16px;
@@ -590,7 +610,10 @@ onMounted(async () => {
         height: 21px;
       }
       &.active {
-        background: #0090FF;
+        background: #3290EC;
+        .play-nav-title {
+          color: #FFF;
+        }
       }
     }
   }
@@ -603,7 +626,7 @@ onMounted(async () => {
     width: 100%;
     height: 170px;
     border-radius: 14px;
-    background: #1C1C1E;
+    background: #E8EDF3;
     overflow-x: hidden;
     position: relative;
     .play-card-list {
@@ -617,15 +640,16 @@ onMounted(async () => {
         height: 140px;
         flex-shrink: 0;
         border-radius: 8px;
-        background: #2E2E2E;
+        background: #FFF;
         display: flex;
         position: relative;
         justify-content: space-between;
         flex-direction: column;
         align-items: center;
         padding: 14px 0;
+        padding-top: 28px;
         &.hover {
-          background: #4C4C4C;
+          background: #CFE7FF;
         }
         .card-icon {
           width: 45px;
@@ -643,12 +667,12 @@ onMounted(async () => {
           height: 20px;
           flex-shrink: 0;
           border-radius: 15px;
-          background: #545454;
+          background: #F5F5F5;
           display: flex;
           gap: 4px;
           align-items: center;
           justify-content: center;
-          color: #F2F2F2;
+          color: #000;
           font-family: "DINAlternate";
           font-size: 14px;
           font-style: normal;
@@ -734,6 +758,14 @@ onMounted(async () => {
         /*逆向播放*/
         animation-play-state: running;
       }
+    }
+  }
+  .join_channel {
+    margin-top: 16px;
+    cursor: pointer;
+    width: calc(100% - 40px);
+    img {
+      width: 100%;
     }
   }
 }
@@ -841,4 +873,11 @@ onMounted(async () => {
     top: 1px;
   }
 }
+.van-overlay {
+  background: rgba(255, 255, 255, .7) !important;
+  backdrop-filter: blur(8px);
+}
+</style>
+<style>
+
 </style>
