@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-import {Skeleton, SkeletonAvatar,Popup,List } from 'vant'
+import {Skeleton,Popup,List } from 'vant'
 // utils
 import { NEW_IMAGES } from '@/assets'
 import { TG_ICON } from '@/constants/is'
@@ -14,8 +14,6 @@ import {useI18n} from "vue-i18n";
 const { t } = useI18n()
 const { user } = useUserStoreRefs()
 const myList:any = ref(null)
-const allList:any = ref(null)
-const limitList:any = ref(null)
 const page = ref(1)
 const animation = ref('')
 const finished = ref(false)
@@ -133,7 +131,7 @@ function closePopup() {
             <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
           </div>
         </div>
-        <div v-for="i in [0,1,2,3]" class="card zhan"></div>
+        <div v-for="i in [0,1,2,3]" :index="i" class="card zhan"></div>
       </div>
     </List>
     <Popup v-model:show="showPopup" class="blue-popup" teleport="#app">

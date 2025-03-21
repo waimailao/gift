@@ -5,7 +5,7 @@ import { NEW_IMAGES } from '@/assets'
 import {useApiClient} from "@/api/hooks/useClient";
 import {Apis} from "@/api";
 import {useUserStoreRefs} from "@/store/modules/user";
-import {showDialog, showNotify} from "vant";
+import {showDialog} from "vant";
 import {useI18n} from "vue-i18n";
 interface Props {
   animation?: string,

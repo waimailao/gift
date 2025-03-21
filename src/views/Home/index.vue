@@ -11,7 +11,6 @@ import {Apis} from "@/api";
 import {useI18n} from "vue-i18n";
 // import {TGClient} from "@/services/telegram";
 const { t } = useI18n()
-const listAll:any = ref(null)
 const nowList:any = ref(null)
 const navType = ref(4)
 const page = ref(1)
