@@ -157,7 +157,7 @@ class Client {
       await importScript(Client.TG_ANALYTICS_SDK_URL)
 
     _window.telegramAnalytics.init({
-      token: 'eyJhcHBfbmFtZSI6Illlc2NvaW4iLCJhcHBfdXJsIjoiaHR0cHM6Ly93d3cueWVzY29pbi5nb2xkIiwiYXBwX2RvbWFpbiI6Imh0dHBzOi8vd3d3Lnllc2NvaW4uZ29sZCJ9!jt7UFX5GXqmzH79vwnPry28ldPvN1P3Iu+kKP0DELoY=',
+      token: import.meta.env.VITE_TELEGRAM_TOKEN,
       appName: 'GIFT',
     })
   }
@@ -245,10 +245,10 @@ export function setupTelegram() {
       // init mini app
       const [miniApp] = initMiniApp()
       if (miniApp) {
-        miniApp.setHeaderColor('#010101')
-        miniApp.setBgColor('#010101')
+        miniApp.setHeaderColor('#FFF')
+        miniApp.setBgColor('#FFF')
         TGClient.miniApp = miniApp
-        TGClient.setBottomBarColor('#010101')
+        TGClient.setBottomBarColor('#FFF')
       }
       // init back button
       const [backButton] = initBackButton()

@@ -48,7 +48,6 @@ const router = useRouter()
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
