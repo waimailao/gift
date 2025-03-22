@@ -245,10 +245,10 @@ export function setupTelegram() {
       // init mini app
       const [miniApp] = initMiniApp()
       if (miniApp) {
-        miniApp.setHeaderColor('var(--tg-theme-bg-color-transparent)')
-        miniApp.setBgColor('var(--tg-theme-bg-color-transparent)')
+        miniApp.setHeaderColor('#FFFFFF')
+        miniApp.setBgColor('#FFFFFF')
         TGClient.miniApp = miniApp
-        TGClient.setBottomBarColor('var(--tg-theme-bg-color-transparent)')
+        TGClient.setBottomBarColor('#FFFFFF')
       }
       // init back button
       const [backButton] = initBackButton()
