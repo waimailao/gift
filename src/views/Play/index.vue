@@ -40,7 +40,7 @@ const canClick = ref(true)
 const showFirst = ref(false)
 const { isFetching } = useApiClient(async () => {
   const list = await Apis.user.gifts() as BackendResponseData
-  listTop.value = list[0].gifts;
+  listTop.value = list[0].gifts.sort(() => Math.random() - 0.5);
   listAll.value = list
   listMain.value = list[0].gifts.concat(list[0].gifts).concat(list[0].gifts).sort(() => Math.random() - 0.5);
   list25.value = list[0].gifts.concat(list[0].gifts).concat(list[0].gifts);
@@ -67,6 +67,7 @@ function changeType(type: number) {
     listTop.value = listAll.value[3].gifts;
   }
   listMain.value = listMain.value.sort(() => Math.random() - 0.5);
+  listTop.value = listTop.value.sort(() => Math.random() - 0.5);
 }
 
 // Star Payment Interval Init
@@ -241,14 +242,16 @@ async function clickFirstPopup() {
   showFirst.value = false;
   await doLottery();
 }
-watch(user, (value) => {
+watch(user, async (value) => {
   console.log(value);
+  await sleep(5000)
   if (user.value.first_lottery) {
     showFirst.value = true;
   }
 })
 onMounted(async () => {
   await nextTick()
+  await sleep(5000)
   console.log(user.value.first_lottery)
   if (user.value.first_lottery) {
     showFirst.value = true;
