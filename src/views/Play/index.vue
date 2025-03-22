@@ -461,7 +461,7 @@ onMounted(async () => {
       align-items: center;
       justify-content: space-between;
       min-width: 70.403px;
-      height: 20.241px;
+      height: 28.241px;
       color: #CF8A37;
       font-family: "DINAlternate";
       font-size: 16px;
@@ -474,16 +474,14 @@ onMounted(async () => {
       border: 1px solid #3290EC;
       background: #E8EDF3;
       .right-icon {
-        width: 12.242px;
-        height: 13.14px;
+        height: 16.14px;
       }
       .right-add {
-        width: 14px;
-        height: 14px;
+        width: 20px;
+        height: 20px;
         border-radius: 50%;
         display: flex;
         justify-content: center;
-        line-height: 14px;
       }
       .right-amount {
         display: flex;
@@ -576,7 +574,7 @@ onMounted(async () => {
         align-items: center;
       }
       .card-icon {
-        width: 40px;
+        height: 40px;
         margin-top: 7px;
       }
       .card-icon-tag {
