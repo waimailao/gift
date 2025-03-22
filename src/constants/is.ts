@@ -23,6 +23,7 @@ export const TG_ICON = [
   { value: 5170250947678437525, icon: NEW_IMAGES.GIFT_5170250947678437525 },
   { value: 5168043875654172773, icon: NEW_IMAGES.GIFT_5168043875654172773 },
   { value: 1, icon: NEW_IMAGES.HOME_NAV_COIN },
+  { value: 0, icon: NEW_IMAGES.HOME_NAV_COIN },
 ]
 
 export function isProd() {

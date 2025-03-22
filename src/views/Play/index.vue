@@ -62,6 +62,10 @@ function changeType(type: number) {
     listMain.value = list100.value
     listTop.value = listAll.value[2].gifts;
   }
+  if (type == 7) {
+    listMain.value = list100.value
+    listTop.value = listAll.value[3].gifts;
+  }
   listMain.value = listMain.value.sort(() => Math.random() - 0.5);
 }
 
@@ -89,7 +93,7 @@ async function handleWalletUnbinding(action: string): Promise<any> {
 function clickButton() {
   if (!canClick.value) return;
   showConfirmDialog({
-    title: t('play_coin',{'coin': navType.value == 6 ? 100 : (navType.value == 5 ? 50 : 25)}),
+    title: t('play_coin',{'coin': navType.value == 7 ? 100 : (navType.value == 6 ? 50 : (navType.value == 5 ? 25 : 15))}),
     confirmButtonText: t('yes'),
     cancelButtonText: t('no'),
     showCancelButton: true,
@@ -102,20 +106,21 @@ const { execute: doLottery } = useApiClient(async (flag:boolean = false)  => {
   canClick.value = false;
   const detail = await Apis.user.doLottery({}, navType.value) as any
   console.log(detail);
-  if (detail.raward_type == 1) {
-    changePlayList(detail.integral);
+  if (detail.award_type == 2) {
+    changePlayList(detail.integral_price);
     return;
   }
-  if (detail.raward_type == 2) {
-    console.log(detail);
-    listMain.value[21].star_price = detail.gifts.star_price;
-    listMain.value[21].gift_tg_id = detail.gifts.gift_tg_id;
-    listMain.value[21].is_limit = detail.gifts.is_limit;
-    listMain.value[21].id = detail.gifts.id;
-    animation.value = detail.gifts.gift_animation;
-    animationId.value = detail.gifts.lottery_id;
-    price.value = detail.gifts.star_price;
-    const integral_num = navType.value == 6 ? 100 : (navType.value == 5 ? 50 : 25);
+  if (detail.award_type == 1) {
+    console.log(1111,detail);
+    listMain.value[21].star_price = detail.star_price;
+    listMain.value[21].gift_tg_id = detail.gift_tg_id;
+    listMain.value[21].is_limit = detail.is_limit;
+    listMain.value[21].id = detail.id;
+    animation.value = detail.gift_animation;
+    animationId.value = detail.lottery_id;
+    price.value = detail.star_price;
+
+    const integral_num = navType.value == 7 ? 100 : (navType.value == 6 ? 50 : (navType.value == 5 ? 25 : 15));
     if (!flag) {
       user.value.integral_num = user.value.integral_num - integral_num;
     }
@@ -161,8 +166,10 @@ async function openPopup(integral:number = 0) {
   cardList.value!.children[21].classList.add('hover')
   await sleep(250)
   if (integral) {
+    user.value.integral_num = user.value.integral_num + integral;
     showDialog({
       title: t('get_coin',{'coin': integral}),
+      confirmButtonText: t('ok')
     })
     changeType(navType.value);
     closePopup()
@@ -173,42 +180,42 @@ async function openPopup(integral:number = 0) {
 }
 
 function changePlayList(integral: number) {
-  listMain.value = listMain.value.concat(
-    [
-      {
-        'star_price': 5,
-        'gift_tg_id': 1,
-        'is_limit': 0,
-      },
-      {
-        'star_price': 6,
-        'gift_tg_id': 1,
-        'is_limit': 0,
-      },
-      {
-        'star_price': 7,
-        'gift_tg_id': 1,
-        'is_limit': 0,
-      },
-      {
-        'star_price': 8,
-        'gift_tg_id': 1,
-        'is_limit': 0,
-      },
-      {
-        'star_price': 9,
-        'gift_tg_id': 1,
-        'is_limit': 0,
-      },
-      {
-        'star_price': 10,
-        'gift_tg_id': 1,
-        'is_limit': 0,
-      },
-    ]
-  ).sort(() => Math.random() - 0.5);
-  listMain.value[21].star_price = integral;
-  listMain.value[21].gift_tg_id = 1;
+  // listMain.value = listMain.value.concat(
+  //   [
+  //     {
+  //       'integral_price': 5,
+  //       'gift_tg_id': 1,
+  //       'is_limit': 0,
+  //     },
+  //     {
+  //       'integral_price': 6,
+  //       'gift_tg_id': 0,
+  //       'is_limit': 0,
+  //     },
+  //     {
+  //       'integral_price': 7,
+  //       'gift_tg_id': 0,
+  //       'is_limit': 0,
+  //     },
+  //     {
+  //       'integral_price': 8,
+  //       'gift_tg_id': 0,
+  //       'is_limit': 0,
+  //     },
+  //     {
+  //       'integral_price': 9,
+  //       'gift_tg_id': 0,
+  //       'is_limit': 0,
+  //     },
+  //     {
+  //       'integral_price': 10,
+  //       'gift_tg_id': 0,
+  //       'is_limit': 0,
+  //     },
+  //   ]
+  // ).sort(() => Math.random() - 0.5);
+  listMain.value[21].integral_price = integral;
+  listMain.value[21].gift_tg_id = 0;
   listMain.value[21].is_limit = 0;
   playGame(integral);
 }
@@ -291,7 +298,7 @@ onMounted(async () => {
 
       <div v-else class="card-list">
         <div class="card-box">
-          <div class="card-content" :class="[{'animation1': navType == 4},{'animation2': navType == 5},{'animation3': navType == 6}]">
+          <div class="card-content" :class="[{'animation1': navType == 4},{'animation2': navType == 5},{'animation3': navType == 6},{'animation4': navType == 7}]">
             <div v-for="(item, i) in listTop" :key="i" class="card">
               <div class="card-chance">
                 {{item.probability + '%'}}
@@ -300,7 +307,7 @@ onMounted(async () => {
               <img class="card-icon-tag" v-if="item.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">
               <div class="card-button">
                 <div>
-                  {{item.star_price}}
+                  {{item.gift_tg_id > 0 ? item.star_price : item.integral_price}}
                 </div>
                 <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
               </div>
@@ -315,17 +322,23 @@ onMounted(async () => {
       <div class="play-nav">
         <div v-on:click="()=>changeType(4)" class="play-nav-child" :class="{'active': navType == 4}">
           <div CLASS="play-nav-title">
-            25
+            15
           </div>
           <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
         </div>
         <div v-on:click="()=>changeType(5)" class="play-nav-child" :class="{'active': navType == 5}">
           <div CLASS="play-nav-title">
-            50
+            25
           </div>
           <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
         </div>
         <div v-on:click="()=>changeType(6)" class="play-nav-child" :class="{'active': navType == 6}">
+          <div CLASS="play-nav-title">
+            50
+          </div>
+          <img class="play-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
+        </div>
+        <div v-on:click="()=>changeType(7)" class="play-nav-child" :class="{'active': navType == 7}">
           <div CLASS="play-nav-title">
             100
           </div>
@@ -354,7 +367,7 @@ onMounted(async () => {
               <img class="card-icon-tag" v-if="i.is_limit" :src="NEW_IMAGES.GIFT_TAG" alt="">
               <div class="card-button">
                 <div>
-                  {{i.star_price}}
+                  {{i.gift_tg_id > 0 ? i.star_price : i.integral_price}}
                 </div>
                 <img class="card-button-icon" :src="NEW_IMAGES.HOME_NAV_COIN" alt="">
               </div>
@@ -418,6 +431,7 @@ onMounted(async () => {
   min-height: 100%;
   overflow-x: hidden;
   overscroll-behavior-y: none;
+  padding-bottom: 72px;
   .main-content {
     position: relative;
     width: 100%;
@@ -518,17 +532,18 @@ onMounted(async () => {
         &.animation1 {
           animation-name: card-beat1;
           animation-duration: 8s;
-
         }
         &.animation2 {
           animation-name: card-beat2;
-          animation-duration: 10s;
-
+          animation-duration: 10.4s;
         }
         &.animation3 {
           animation-name: card-beat3;
-          animation-duration: 10s;
-
+          animation-duration: 15.2s;
+        }
+        &.animation4 {
+          animation-name: card-beat4;
+          animation-duration: 14.4s;
         }
       }
     }
@@ -795,9 +810,9 @@ onMounted(async () => {
 }
 .first-popup {
   background: transparent;
-  width: calc(100% - 110px);
-  height: 177px;
-  margin-left: 55px;
+  width: calc(100% - 50px);
+  height: 200px;
+  margin-left: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -809,6 +824,7 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 0 20px;
     .first-icon {
       margin-top: 14.5px;
       width: 61px;
@@ -827,10 +843,12 @@ onMounted(async () => {
       }
     }
     .first-button {
-      margin-top: 30px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
       display: flex;
       width: 100%;
-      padding: 0 55px;
+      //padding: 0 55px;
       justify-content: space-between;
       color: #3382FB;
       text-align: justify;
@@ -840,6 +858,11 @@ onMounted(async () => {
       line-height: normal;
       .first-button-child {
         cursor: pointer;
+        width: 50%;
+        text-align:center;
+        &:first-child {
+          border-right: 1px solid #eee;
+        }
       }
     }
   }
@@ -859,7 +882,7 @@ onMounted(async () => {
   }
 
   100% {
-    transform: translateX(-160%);
+    transform: translateX(-100%);
   }
 }
 @keyframes card-beat2 {
@@ -868,7 +891,7 @@ onMounted(async () => {
   }
 
   100% {
-    transform: translateX(-220%);
+    transform: translateX(-160%);
   }
 }
 @keyframes card-beat3 {
@@ -877,7 +900,16 @@ onMounted(async () => {
   }
 
   100% {
-    transform: translateX(-220%);
+    transform: translateX(-280%);
+  }
+}
+@keyframes card-beat4 {
+  0% {
+    transform: translateX(0px);
+  }
+
+  100% {
+    transform: translateX(-260%);
   }
 }
 @keyframes beat {

@@ -63,17 +63,23 @@ function changeType(type:number) {
     <div class="home-nav">
       <div v-on:click="()=>changeType(4)" class="home-nav-child" :class="{'active': navType == 4}">
         <div CLASS="home-nav-title">
-          25
+          15
         </div>
         <img class="home-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
       <div v-on:click="()=>changeType(5)" class="home-nav-child" :class="{'active': navType == 5}">
         <div CLASS="home-nav-title">
-          50
+          25
         </div>
         <img class="home-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
       </div>
       <div v-on:click="()=>changeType(6)" class="home-nav-child" :class="{'active': navType == 6}">
+        <div CLASS="home-nav-title">
+          50
+        </div>
+        <img class="home-nav-icon" :src="NEW_IMAGES.HOME_NAV_COIN">
+      </div>
+      <div v-on:click="()=>changeType(7)" class="home-nav-child" :class="{'active': navType == 7}">
         <div CLASS="home-nav-title">
           100
         </div>
